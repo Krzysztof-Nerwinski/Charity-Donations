@@ -25,8 +25,6 @@
           <li><a href="#contact" class="btn btn--without-border">Kontakt</a></li>
         </ul>
       </nav>
-
-      {% block extra_header %}
       <div class="slogan container container--90">
         <div class="slogan--item">
           <h1>
@@ -35,16 +33,17 @@
           </h1>
         </div>
       </div>
-      {% endblock %}
     </header>
+    {% block extra_header %}
+    {% endblock %}
+
 
    {% block content %}
    {% endblock %}
 
-    <footer>
       {% block extra_footer %}
       {% endblock %}
-
+    <footer>
       <div class="bottom-line">
         <span class="bottom-line--copy">Copyright &copy; 2019</span>
         <div class="bottom-line--icons">
