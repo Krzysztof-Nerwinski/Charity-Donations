@@ -121,5 +121,5 @@ dmypy.json
 
 #my files
 venv/*
-.idea/*
-materialy/*
+.idea/
+/local/
