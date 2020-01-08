@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
-{% block extra_header %}
+{% block title %} Przekaż dary {% endblock %}
+
+{% block header %}
     <header class="header--form-page">
+    {% include 'includes/top_menu.html' %}
       <div class="slogan container container--90">
         <div class="slogan--item">
           <h1>
@@ -278,6 +281,6 @@
       </div>
     </section>
 {% endblock %}
-{% block extra_footer %}
+{% block footer %}
 {% include 'includes/contact_footer.html' %}
 {% endblock %}

@@ -1,16 +1,18 @@
 {% extends 'base.html' %}
+{% block title %} Potwierdzenie {% endblock %}
 
-{% block extra_header %}
+{% block header %}
     <header class="header--form-page">
-      <div class="slogan container container--90">
-          <h2>
-            Dziękujemy za przesłanie formularza. Na maila prześlemy wszelkie informacje o odbiorze.
-          </h2>
-      </div>
+        {% include 'includes/top_menu.html' %}
+        <div class="slogan container container--90">
+            <h2>
+                Dziękujemy za przesłanie formularza. Na maila prześlemy wszelkie informacje o odbiorze.
+            </h2>
+        </div>
     </header>
 {% endblock %}
 
 
-{% block extra_footer %}
-{% include 'includes/contact_footer.html' %}
+{% block footer %}
+    {% include 'includes/contact_footer.html' %}
 {% endblock %}
