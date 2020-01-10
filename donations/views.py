@@ -26,9 +26,9 @@ class AddDonationView(View):
 
 class LoginView(View):
     def get(self, request):
-        return render(request, 'login.html')
+        return render(request, 'registration/login.html')
 
 
 class RegistrationView(View):
     def get(self, request):
-        return render(request, 'register.html')
+        return render(request, 'registration/register.html')
