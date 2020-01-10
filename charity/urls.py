@@ -19,10 +19,7 @@ from donations import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('/', include('django.contrib.auth.urls')),
-    path('', views.LandingPageView.as_view(), name='index'),
-    path('add_donation/', views.AddDonationView.as_view(), name='add-donation'),
-    path('login/', views.LoginView.as_view(), name='login'),
-    path('register/', views.RegistrationView.as_view(), name='register'),
-
+    path('', include('accounts.urls')),
+    path('', include('donations.urls')),
+    path('', include('django.contrib.auth.urls')),
 ]

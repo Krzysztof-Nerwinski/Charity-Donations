@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from accounts.models import CustomUser
 from django.db import models
 
 
@@ -32,4 +32,4 @@ class Donation(models.Model):
     pick_up_date = models.DateField()
     pick_up_time = models.TimeField()
     pick_up_comment = models.TextField()
-    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)
