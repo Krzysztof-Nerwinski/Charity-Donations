@@ -1,11 +1,14 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UsernameField
 from django.core.exceptions import ValidationError
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
+from django.urls import reverse_lazy, reverse
 
 from accounts.models import CustomUser
 
 
-class RegistrationForm(UserCreationForm):
+class CustomRegistrationForm(UserCreationForm):
     validation_errors = {
         'email_exists': 'Użytkownik o podanym adresie email już istnieje',
     }
@@ -21,7 +24,7 @@ class RegistrationForm(UserCreationForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(RegistrationForm, self).__init__(*args, **kwargs)
+        super(CustomRegistrationForm, self).__init__(*args, **kwargs)
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
         self.fields['email'].required = True
@@ -36,7 +39,6 @@ class RegistrationForm(UserCreationForm):
     def clean_password2(self):
         password = self.cleaned_data.get("password")
         password2 = self.cleaned_data.get("password2")
-        print(password, password2)
         if password and password2 and password != password2:
             raise ValidationError(
                 self.error_messages['password_mismatch'],
@@ -45,8 +47,16 @@ class RegistrationForm(UserCreationForm):
         return password2
 
     def save(self, commit=True):
-        user = super(RegistrationForm, self).save(commit=False)
+        user = super(UserCreationForm, self).save(commit=False)
         user.username = self.cleaned_data['email']
+        user.set_password(self.cleaned_data['password'])
         if commit:
             user.save()
         return user
+
+
+class CustomAuthenticationForm(AuthenticationForm):
+    username = UsernameField(widget=forms.EmailInput(attrs={'autofocus': True,
+                                                            'placeholder': 'Email'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Hasło',
+                                                                 'label': 'Hasło'}))
