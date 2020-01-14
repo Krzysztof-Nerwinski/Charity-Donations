@@ -1,0 +1,504 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 10.10 (Ubuntu 10.10-0ubuntu0.18.04.1)
+-- Dumped by pg_dump version 11.5 (Ubuntu 11.5-3.pgdg18.04+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: donations_category; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.donations_category (
+    id integer NOT NULL,
+    name character varying(256) NOT NULL
+);
+
+
+ALTER TABLE public.donations_category OWNER TO postgres;
+
+--
+-- Name: donations_category_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.donations_category_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.donations_category_id_seq OWNER TO postgres;
+
+--
+-- Name: donations_category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.donations_category_id_seq OWNED BY public.donations_category.id;
+
+
+--
+-- Name: donations_donation; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.donations_donation (
+    id integer NOT NULL,
+    quantity integer NOT NULL,
+    address character varying(128) NOT NULL,
+    phone_number character varying(15) NOT NULL,
+    city character varying(64) NOT NULL,
+    zip_code character varying(10) NOT NULL,
+    pick_up_date date NOT NULL,
+    pick_up_time time without time zone NOT NULL,
+    pick_up_comment text NOT NULL,
+    institution_id integer NOT NULL,
+    user_id integer
+);
+
+
+ALTER TABLE public.donations_donation OWNER TO postgres;
+
+--
+-- Name: donations_donation_categories; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.donations_donation_categories (
+    id integer NOT NULL,
+    donation_id integer NOT NULL,
+    category_id integer NOT NULL
+);
+
+
+ALTER TABLE public.donations_donation_categories OWNER TO postgres;
+
+--
+-- Name: donations_donation_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.donations_donation_categories_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.donations_donation_categories_id_seq OWNER TO postgres;
+
+--
+-- Name: donations_donation_categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.donations_donation_categories_id_seq OWNED BY public.donations_donation_categories.id;
+
+
+--
+-- Name: donations_donation_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.donations_donation_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.donations_donation_id_seq OWNER TO postgres;
+
+--
+-- Name: donations_donation_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.donations_donation_id_seq OWNED BY public.donations_donation.id;
+
+
+--
+-- Name: donations_institution; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.donations_institution (
+    id integer NOT NULL,
+    name character varying(256) NOT NULL,
+    description text,
+    type integer NOT NULL
+);
+
+
+ALTER TABLE public.donations_institution OWNER TO postgres;
+
+--
+-- Name: donations_institution_categories; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.donations_institution_categories (
+    id integer NOT NULL,
+    institution_id integer NOT NULL,
+    category_id integer NOT NULL
+);
+
+
+ALTER TABLE public.donations_institution_categories OWNER TO postgres;
+
+--
+-- Name: donations_institution_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.donations_institution_categories_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.donations_institution_categories_id_seq OWNER TO postgres;
+
+--
+-- Name: donations_institution_categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.donations_institution_categories_id_seq OWNED BY public.donations_institution_categories.id;
+
+
+--
+-- Name: donations_institution_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.donations_institution_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.donations_institution_id_seq OWNER TO postgres;
+
+--
+-- Name: donations_institution_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.donations_institution_id_seq OWNED BY public.donations_institution.id;
+
+
+--
+-- Name: donations_category id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations_category ALTER COLUMN id SET DEFAULT nextval('public.donations_category_id_seq'::regclass);
+
+
+--
+-- Name: donations_donation id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations_donation ALTER COLUMN id SET DEFAULT nextval('public.donations_donation_id_seq'::regclass);
+
+
+--
+-- Name: donations_donation_categories id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations_donation_categories ALTER COLUMN id SET DEFAULT nextval('public.donations_donation_categories_id_seq'::regclass);
+
+
+--
+-- Name: donations_institution id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations_institution ALTER COLUMN id SET DEFAULT nextval('public.donations_institution_id_seq'::regclass);
+
+
+--
+-- Name: donations_institution_categories id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations_institution_categories ALTER COLUMN id SET DEFAULT nextval('public.donations_institution_categories_id_seq'::regclass);
+
+
+--
+-- Data for Name: donations_category; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.donations_category (id, name) FROM stdin;
+1	ubrania
+2	jedzenie
+3	sprzęt AGD
+4	meble
+5	zabawki
+6	sprzęt RTV
+\.
+
+
+--
+-- Data for Name: donations_donation; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.donations_donation (id, quantity, address, phone_number, city, zip_code, pick_up_date, pick_up_time, pick_up_comment, institution_id, user_id) FROM stdin;
+1	2	adres 111	111-111-111	Warsaw	01-001	2020-01-09	14:24:21	test	1	\N
+2	3	adres 111	111-111-111	Warsaw	01-001	2020-01-09	14:24:21	test	1	\N
+3	3	adres 111	111-111-111	Warsaw	01-001	2020-01-09	14:24:21	test	2	\N
+\.
+
+
+--
+-- Data for Name: donations_donation_categories; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.donations_donation_categories (id, donation_id, category_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: donations_institution; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.donations_institution (id, name, description, type) FROM stdin;
+1	testowa organizacja 1	opis testowy blabla	1
+2	testowa organizacja 2	opis testowy blabla	2
+3	testowa organizacja 3	opis testowy blabla	3
+4	testowa organizacja 4	opis testowy blabla	1
+5	testowa organizacja 5	opis testowy blabla	2
+6	testowa organizacja 6	opis testowy blabla	3
+7	testowa organizacja 7	opis testowy blabla	1
+8	testowa organizacja 8	opis testowy blabla	2
+9	testowa organizacja 9	opis testowy blabla	3
+10	testowa organizacja 10	opis testowy blabla	1
+\.
+
+
+--
+-- Data for Name: donations_institution_categories; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.donations_institution_categories (id, institution_id, category_id) FROM stdin;
+1	1	4
+2	2	5
+3	3	4
+4	1	2
+5	2	3
+6	3	1
+7	4	6
+8	5	2
+9	6	6
+10	7	4
+11	8	5
+12	9	4
+13	10	6
+15	2	2
+16	3	2
+17	4	4
+19	6	2
+20	7	5
+21	8	6
+23	10	1
+\.
+
+
+--
+-- Name: donations_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.donations_category_id_seq', 6, true);
+
+
+--
+-- Name: donations_donation_categories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.donations_donation_categories_id_seq', 1, false);
+
+
+--
+-- Name: donations_donation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.donations_donation_id_seq', 3, true);
+
+
+--
+-- Name: donations_institution_categories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.donations_institution_categories_id_seq', 23, true);
+
+
+--
+-- Name: donations_institution_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.donations_institution_id_seq', 10, true);
+
+
+--
+-- Name: donations_category donations_category_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations_category
+    ADD CONSTRAINT donations_category_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: donations_donation_categories donations_donation_categ_donation_id_category_id_5f95ea4c_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations_donation_categories
+    ADD CONSTRAINT donations_donation_categ_donation_id_category_id_5f95ea4c_uniq UNIQUE (donation_id, category_id);
+
+
+--
+-- Name: donations_donation_categories donations_donation_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations_donation_categories
+    ADD CONSTRAINT donations_donation_categories_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: donations_donation donations_donation_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations_donation
+    ADD CONSTRAINT donations_donation_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: donations_institution_categories donations_institution_ca_institution_id_category__507f2cf1_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations_institution_categories
+    ADD CONSTRAINT donations_institution_ca_institution_id_category__507f2cf1_uniq UNIQUE (institution_id, category_id);
+
+
+--
+-- Name: donations_institution_categories donations_institution_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations_institution_categories
+    ADD CONSTRAINT donations_institution_categories_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: donations_institution donations_institution_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations_institution
+    ADD CONSTRAINT donations_institution_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: donations_donation_categories_category_id_f11befbb; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX donations_donation_categories_category_id_f11befbb ON public.donations_donation_categories USING btree (category_id);
+
+
+--
+-- Name: donations_donation_categories_donation_id_3adc1640; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX donations_donation_categories_donation_id_3adc1640 ON public.donations_donation_categories USING btree (donation_id);
+
+
+--
+-- Name: donations_donation_institution_id_bc7cb9d8; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX donations_donation_institution_id_bc7cb9d8 ON public.donations_donation USING btree (institution_id);
+
+
+--
+-- Name: donations_donation_user_id_04dd09bd; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX donations_donation_user_id_04dd09bd ON public.donations_donation USING btree (user_id);
+
+
+--
+-- Name: donations_institution_categories_category_id_d33bd6e3; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX donations_institution_categories_category_id_d33bd6e3 ON public.donations_institution_categories USING btree (category_id);
+
+
+--
+-- Name: donations_institution_categories_institution_id_64c7dbea; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX donations_institution_categories_institution_id_64c7dbea ON public.donations_institution_categories USING btree (institution_id);
+
+
+--
+-- Name: donations_donation_categories donations_donation_c_category_id_f11befbb_fk_donations; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations_donation_categories
+    ADD CONSTRAINT donations_donation_c_category_id_f11befbb_fk_donations FOREIGN KEY (category_id) REFERENCES public.donations_category(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: donations_donation_categories donations_donation_c_donation_id_3adc1640_fk_donations; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations_donation_categories
+    ADD CONSTRAINT donations_donation_c_donation_id_3adc1640_fk_donations FOREIGN KEY (donation_id) REFERENCES public.donations_donation(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: donations_donation donations_donation_institution_id_bc7cb9d8_fk_donations; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations_donation
+    ADD CONSTRAINT donations_donation_institution_id_bc7cb9d8_fk_donations FOREIGN KEY (institution_id) REFERENCES public.donations_institution(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: donations_donation donations_donation_user_id_04dd09bd_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations_donation
+    ADD CONSTRAINT donations_donation_user_id_04dd09bd_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: donations_institution_categories donations_institutio_category_id_d33bd6e3_fk_donations; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations_institution_categories
+    ADD CONSTRAINT donations_institutio_category_id_d33bd6e3_fk_donations FOREIGN KEY (category_id) REFERENCES public.donations_category(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: donations_institution_categories donations_institutio_institution_id_64c7dbea_fk_donations; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations_institution_categories
+    ADD CONSTRAINT donations_institutio_institution_id_64c7dbea_fk_donations FOREIGN KEY (institution_id) REFERENCES public.donations_institution(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
