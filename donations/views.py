@@ -1,8 +1,9 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 from django.shortcuts import render
 from django.views import View
 
-from donations.models import Donation, Institution
+from donations.models import Donation, Institution, Category
 
 
 class LandingPageView(View):
@@ -19,6 +20,9 @@ class LandingPageView(View):
                                               'local_pickups': local_pickups})
 
 
-class AddDonationView(View):
+class AddDonationView(LoginRequiredMixin, View):
     def get(self, request):
-        return render(request, 'form.html')
+        categories = Category.objects.all()
+        organizations = Institution.objects.all()
+        return render(request, 'form.html', {'categories': categories,
+                                             'organizations': organizations})

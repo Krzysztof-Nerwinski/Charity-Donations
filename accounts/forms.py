@@ -56,7 +56,8 @@ class CustomRegistrationForm(UserCreationForm):
 
 
 class CustomAuthenticationForm(AuthenticationForm):
-    username = UsernameField(widget=forms.EmailInput(attrs={'autofocus': True,
-                                                            'placeholder': 'Email'}))
+    username = forms.CharField(widget=forms.EmailInput(attrs={'autofocus': True,
+                                                              'placeholder': 'Email',
+                                                              'autocomplete': 'email'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Hasło',
                                                                  'label': 'Hasło'}))
