@@ -33,7 +33,7 @@
     </header>
 {% endblock %}
 {% block content %}
-
+{% load additional_template_tags %}
     <section class="form--steps">
       <div class="form--steps-instructions">
         <div class="form--steps-container">
@@ -75,7 +75,7 @@
             {% endfor %}
 
             <div class="form-group form-group--buttons">
-              <button type="button" class="btn next-step">Dalej</button>
+              <button type="button" class="btn next-step" id="next_step_1">Dalej</button>
             </div>
           </div>
 
@@ -102,14 +102,14 @@
           <div data-step="3">
             <h3>Wybierz organizacje, której chcesz pomóc:</h3>
             {% for organization in organizations %}
-            <div class="form-group form-group--checkbox">
+            <div class="form-group form-group--checkbox organization" hidden>
+              <div class="categories" hidden>{{ organization.categories.all|show_queryset_ids }}</div>
               <label>
-                <input type="radio" name="organization" value="old" />
+                <input type="radio" name="organization" value="{{ organization.id }}" />
                 <span class="checkbox radio"></span>
                 <span class="description">
                   <div class="title">{{ organization.name }}</div>
                   <div class="subtitle">{{ organization.description }}</div>
-                  <div class="categories" hidden>{{ organization.categories.all|join:' ,' }}</div>
                 </span>
               </label>
             </div>
@@ -231,4 +231,9 @@
         </form>
       </div>
     </section>
+{% endblock %}
+{% block add_js_scripts %}
+    {% load static %}
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/form_donation_handler.js' %}"></script>
 {% endblock %}
