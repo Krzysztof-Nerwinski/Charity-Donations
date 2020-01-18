@@ -26,3 +26,6 @@ class AddDonationView(LoginRequiredMixin, View):
         organizations = Institution.objects.all()
         return render(request, 'form.html', {'categories': categories,
                                              'organizations': organizations})
+
+    def post(self, request):
+        pass

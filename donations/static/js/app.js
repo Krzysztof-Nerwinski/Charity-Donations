@@ -196,8 +196,13 @@ document.addEventListener("DOMContentLoaded", function() {
       this.$next.forEach(btn => {
         btn.addEventListener("click", e => {
           e.preventDefault();
-          this.currentStep++;
-          this.updateForm();
+          //check if user selected any of given organizations on step_3
+          if ((parseInt(this.$step.innerText) === 3) && (noOrgChecked() === true)) {
+            alert("Musisz zaznaczyć co najmniej jedną organizację");
+          } else {
+            this.currentStep++;
+            this.updateForm();
+          }
         });
       });
 
@@ -252,4 +257,99 @@ document.addEventListener("DOMContentLoaded", function() {
   if (form !== null) {
     new FormSteps(form);
   }
+
+
+  /* My code from this point
+  * above code modified slightly*/
+
+  let btn_next_step1 = $("#next_step_1");
+  let btn_next_step2 = $("#next_step_2");
+  let btn_next_last = $("#next_last_step");
+  let all_organizations = $(".organization");
+  let checked_organization_name = undefined;
+  let bags_quantity = 0;
+  let organizations_list_title = $(`div[data-step="3"]`).children("h3");
+  let messages = {
+      "empty_list": "Brak organizacji przyjmujących zaznaczone przedmioty!<br> " +
+          "Wróć do kroku pierwszego i zmień zaznaczenie.",
+      "pick_one": "Wybierz organizacje, której chcesz pomóc:",
+  };
+
+  /* Save selected categories from step 1 and hide unfitting organizations*/
+  btn_next_step1.click(() => {
+      let no_organizations = true;
+      let selected_categories = $("input[name='categories']:checked").map(function () {
+          return $(this).val();
+      }).get();
+      for (let organization of all_organizations) {
+          let categories = $(organization).children(".categories").text();
+          let organization_valid = false;
+          for (let category of categories) {
+              if (selected_categories.includes(category)) {
+                  organization_valid = true;
+              }
+          }
+          if (organization_valid === true) {
+              organization.hidden = false;
+              no_organizations = false;
+          } else {
+              organization.hidden = true;
+          }
+      }
+      if (no_organizations === true) {
+          organizations_list_title.html(messages["empty_list"])
+      } else {
+          organizations_list_title.html(messages["pick_one"])
+      }
+  });
+
+  //step_2 check amount of bags
+  btn_next_step2.click(()=>{
+    bags_quantity = parseInt($("input[name='bags']").val()) || 0;
+  });
+
+
+
+
+
+
+
+
+
 });
+
+
+
+//step_3 verification
+function noOrgChecked() {
+  let no_org_checked = true;
+  let organization_radio = $("input[name='organization']");
+  for (let org of organization_radio) {
+      if (org.checked) {
+        no_org_checked = false;
+        checked_organization_name = $(org).nextAll(".description").children(".title").text()
+      }
+  }
+  return no_org_checked
+}
+
+/* Gather all data from previous steps, verify
+* and fill confirmation data*/
+function fill_final_data(){
+  btn_next_last.on("click", () => {
+    if (bags_quantity === 1) {
+      $("#bags").text(`${bags_quantity} worek`)
+    } else {
+      $("#bags").text(`${bags_quantity} worków`)
+    }
+    $("#organization").text(checked_organization_name);
+    $("#address").text($("input[name='address']").val());
+    $("#city").text($("input[name='city']").val());
+    $("#postcode").text($("input[name='postcode']").val());
+    $("#phone").text($("input[name='phone']").val());
+
+    $("#date").text($("input[name='data']").val());
+    $("#time").text($("input[name='time']").val());
+    $("#more_info").text(`Uwagi: ${$("textarea[name='more_info']").val()}`);
+  });
+}
