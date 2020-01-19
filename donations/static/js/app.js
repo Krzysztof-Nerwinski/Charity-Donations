@@ -199,6 +199,13 @@ document.addEventListener("DOMContentLoaded", function() {
           //check if user selected any of given organizations on step_3
           if ((parseInt(this.$step.innerText) === 3) && (noOrgChecked() === true)) {
             alert("Musisz zaznaczyć co najmniej jedną organizację");
+          } else if (parseInt(this.$step.innerText) === 4) {
+            if (checkFormInputs() === false){
+            } else {
+                fillFinalData();
+            this.currentStep++;
+            this.updateForm();
+            }
           } else {
             this.currentStep++;
             this.updateForm();
@@ -308,48 +315,104 @@ document.addEventListener("DOMContentLoaded", function() {
     bags_quantity = parseInt($("input[name='bags']").val()) || 0;
   });
 
+  //step_3 verification
+  function noOrgChecked() {
+    let no_org_checked = true;
+    let organization_radio = $("input[name='organization']");
+    for (let org of organization_radio) {
+        if (org.checked) {
+          no_org_checked = false;
+          checked_organization_name = $(org).nextAll(".description").children(".title").text()
+        }
+    }
+    return no_org_checked
+  }
 
 
+  /* Gather all data from previous steps
+  * and fill confirmation data*/
+  function fillFinalData(){
+      if (bags_quantity === 1) {
+        $("#bags").text(`${bags_quantity} worek`)
+      } else {
+        $("#bags").text(`${bags_quantity} worków`)
+      }
+      let address = $("input[name='address']").val();
+      let city = $("input[name='city']").val();
+      let postcode = $("input[name='postcode']").val();
+      let phone = $("input[name='phone']").val();
+      let pickup_date = $("input[name='data']").val();
+      let pickup_time = $("input[name='time']").val();
+      let more_info = $("textarea[name='more_info']").val();
+      $("#organization").text(checked_organization_name);
+      $("#address").text(address);
+      $("#city").text(city);
+      $("#postcode").text(postcode);
+      $("#phone").text(phone);
 
-
-
-
+      $("#date").text(pickup_date);
+      $("#time").text(pickup_time);
+      $("#more_info").text(`Uwagi: ${more_info}`);
+  }
 
 
 });
 
 
+function checkFormInputs() {
+  let validation_passed = true;
+  let all_is_valid = true;
+  let elements = document.querySelectorAll("[required]");
+  for (let el of elements) {
+      let field_type = el.type.toLowerCase();
+      switch (field_type) {
+        case "text":
+          let field_name = el.name.toLowerCase();
+          all_is_valid = testInputText(el, field_name);
+          break;
+        case "dsf":
+          all_is_valid = testInputEmail(el);
+          break;
 
-//step_3 verification
-function noOrgChecked() {
-  let no_org_checked = true;
-  let organization_radio = $("input[name='organization']");
-  for (let org of organization_radio) {
-      if (org.checked) {
-        no_org_checked = false;
-        checked_organization_name = $(org).nextAll(".description").children(".title").text()
-      }
+    }
+    if (all_is_valid === false){
+      validation_passed = false
+    }
   }
-  return no_org_checked
+  return validation_passed
 }
 
-/* Gather all data from previous steps, verify
-* and fill confirmation data*/
-function fill_final_data(){
-  btn_next_last.on("click", () => {
-    if (bags_quantity === 1) {
-      $("#bags").text(`${bags_quantity} worek`)
-    } else {
-      $("#bags").text(`${bags_quantity} worków`)
+function testInputText(input, type) {
+    let inputIsValid = true;
+    let pattern = undefined;
+    switch (type) {
+      case "address":
+        pattern = new RegExp("^[a-zA-Z0-9\\\/.,ąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]+$", "gi");
+        break;
+      case "city":
+        pattern = new RegExp("^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]+$", "gi");
+        break;
+      case "postcode":
+        pattern = new RegExp("^[0-9]{2}[\-][0-9]{3}$", "g");
+        break;
+      case "phone":
+        pattern = new RegExp("^[0-9\- ]{7,}$", "g");
+        break;
     }
-    $("#organization").text(checked_organization_name);
-    $("#address").text($("input[name='address']").val());
-    $("#city").text($("input[name='city']").val());
-    $("#postcode").text($("input[name='postcode']").val());
-    $("#phone").text($("input[name='phone']").val());
 
-    $("#date").text($("input[name='data']").val());
-    $("#time").text($("input[name='time']").val());
-    $("#more_info").text(`Uwagi: ${$("textarea[name='more_info']").val()}`);
-  });
+    const reg = new RegExp(pattern, "gi");
+
+    if (!reg.test(input.value)) {
+        inputIsValid = false;
+        $(input).parent().addClass("donation-form-error")
+    } else {
+        $(input).parent().removeClass("donation-form-error")
+    }
+    return inputIsValid;
+}
+
+function testInputEmail(input) {
+    let mailReg = new RegExp("^[0-9a-zA-Z_.-]+@[0-9a-zA-Z.-]+\.[a-zA-Z]{2,3}$", "gi");
+    return mailReg.test(input.value);
+
 }
