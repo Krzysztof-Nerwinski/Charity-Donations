@@ -200,8 +200,10 @@ document.addEventListener("DOMContentLoaded", function() {
           if ((parseInt(this.$step.innerText) === 3) && (noOrgChecked() === true)) {
             alert("Musisz zaznaczyć co najmniej jedną organizację");
           } else if (parseInt(this.$step.innerText) === 4) {
-            if (checkFormInputs() === false){
-                alert("Wypełnij pola z czerwonym opisem!")
+              let failed_fields = [];
+              failed_fields = checkFormInputs().join(", ");
+            if (failed_fields.length > 0 ){
+                alert(`Wypełnij wymienione pola oznczone czerownym opisem! ${failed_fields}`)
             } else {
                 fillFinalData();
             this.currentStep++;
@@ -272,7 +274,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
   let btn_next_step1 = $("#nextStep1");
   let btn_next_step2 = $("#nextStep2");
-  let btn_next_last = $("#nextLastStep");
   let all_organizations = $(".organization");
   let checked_organization_name = undefined;
   let bags_quantity = 0;
@@ -342,7 +343,7 @@ document.addEventListener("DOMContentLoaded", function() {
       let city = $("input[name='city']").val();
       let postcode = $("input[name='postcode']").val();
       let phone = $("input[name='phone']").val();
-      let pickup_date = $("input[name='data']").val();
+      let pickup_date = $("input[name='date']").val();
       let pickup_time = $("input[name='time']").val();
       let more_info = $("textarea[name='more_info']").val();
       $("#organization").text(checked_organization_name);
@@ -355,65 +356,92 @@ document.addEventListener("DOMContentLoaded", function() {
       $("#time").text(pickup_time);
       $("#moreInfo").text(`Uwagi: ${more_info}`);
   }
-
-
 });
 
-
+//Form data verification functions
 function checkFormInputs() {
-  let validation_passed = true;
-  let all_is_valid = true;
+  let failed_fields = [];
   let elements = document.querySelectorAll("[required]");
   for (let el of elements) {
+      let field_is_valid = true;
       let field_type = el.type.toLowerCase();
       switch (field_type) {
         case "text":
           let field_name = el.name.toLowerCase();
-          all_is_valid = testInputText(el, field_name);
+          field_is_valid = testInputText(el, field_name);
           break;
-        case "dsf":
-          all_is_valid = testInputEmail(el);
+        case "date":
+            field_is_valid = testInputDate(el);
+            break;
+        case "time":
+          field_is_valid = testInputTime(el);
           break;
-
-    }
-    if (all_is_valid === false){
-      validation_passed = false
-    }
+      }
+      if (field_is_valid === false){
+        failed_fields.push($(el).parent().text())
+      }
   }
-  return validation_passed
+  return failed_fields
 }
 
 function testInputText(input, type) {
-    let inputIsValid = true;
-    let pattern = undefined;
+    let pattern;
+    let field_is_valid;
     switch (type) {
-      case "address":
-        pattern = new RegExp("^[a-zA-Z0-9\\\/.,ąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]+$", "gi");
-        break;
-      case "city":
-        pattern = new RegExp("^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]+$", "gi");
-        break;
-      case "postcode":
-        pattern = new RegExp("^[0-9]{2}[\-][0-9]{3}$", "g");
-        break;
-      case "phone":
-        pattern = new RegExp("^[0-9\- ]{7,}$", "g");
-        break;
+        case "address":
+            pattern = new RegExp("^[a-zA-Z0-9\/.,ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+( [a-zA-Z0-9\/.,ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+)*$", "gi");
+            break;
+        case "city":
+            pattern = new RegExp("^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+( [a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+)*$", "gi");
+            break;
+        case "postcode":
+            pattern = new RegExp("^[0-9]{2}[-][0-9]{3}$", "g");
+            break;
+        case "phone":
+            pattern = new RegExp("^\\+?[0-9]+([ -][0-9]+)*([/\\][0-9]+)*$", "g");
+            break;
     }
+    if (pattern === undefined){
+        field_is_valid = false;
+        console.log("Error inside testInputText function")
+    } else {
+        field_is_valid = pattern.test(input.value);
+    }
+    addErrorToLabel(input, field_is_valid);
+    return field_is_valid;
+}
 
-    const reg = new RegExp(pattern, "gi");
+function testInputNotEmpty(input) {
+    let field_is_valid = (input.value !== "");
+    addErrorToLabel(input, field_is_valid);
+    return field_is_valid;
+}
 
-    if (!reg.test(input.value)) {
-        inputIsValid = false;
+function testInputDate(input) {
+    let pattern = new RegExp("^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$", "gi");
+    let field_is_valid = (testInputNotEmpty(input) && pattern.test(input.value));
+    if (field_is_valid === true) {
+        let form_date = new Date(input.value);
+        let today_date = Date.now();
+        if (form_date < today_date) {
+            field_is_valid = false;
+            alert("Wybierz datę dziesiejszą bądź późniejszą!")
+        }
+    }
+    addErrorToLabel(input, field_is_valid);
+    return field_is_valid;
+}
+
+function testInputTime(input) {
+    let pattern = new RegExp("^[0-9]{2}\:[0-9]{2}$", "gi");
+    let field_is_valid = (testInputNotEmpty(input) && pattern.test(input.value));
+    addErrorToLabel(input, field_is_valid);
+    return field_is_valid;
+}
+
+function addErrorToLabel(input, is_valid) {
+    if (!is_valid) {
         $(input).parent().addClass("donation-form-error")
     } else {
         $(input).parent().removeClass("donation-form-error")
-    }
-    return inputIsValid;
-}
-
-function testInputEmail(input) {
-    let mailReg = new RegExp("^[0-9a-zA-Z_.-]+@[0-9a-zA-Z.-]+\.[a-zA-Z]{2,3}$", "gi");
-    return mailReg.test(input.value);
-
-}
+    }}
