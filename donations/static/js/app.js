@@ -201,6 +201,7 @@ document.addEventListener("DOMContentLoaded", function() {
             alert("Musisz zaznaczyć co najmniej jedną organizację");
           } else if (parseInt(this.$step.innerText) === 4) {
             if (checkFormInputs() === false){
+                alert("Wypełnij pola z czerwonym opisem!")
             } else {
                 fillFinalData();
             this.currentStep++;
@@ -269,9 +270,9 @@ document.addEventListener("DOMContentLoaded", function() {
   /* My code from this point
   * above code modified slightly*/
 
-  let btn_next_step1 = $("#next_step_1");
-  let btn_next_step2 = $("#next_step_2");
-  let btn_next_last = $("#next_last_step");
+  let btn_next_step1 = $("#nextStep1");
+  let btn_next_step2 = $("#nextStep2");
+  let btn_next_last = $("#nextLastStep");
   let all_organizations = $(".organization");
   let checked_organization_name = undefined;
   let bags_quantity = 0;
@@ -352,7 +353,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
       $("#date").text(pickup_date);
       $("#time").text(pickup_time);
-      $("#more_info").text(`Uwagi: ${more_info}`);
+      $("#moreInfo").text(`Uwagi: ${more_info}`);
   }
 
 
