@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   /**
    * HomePage - Help section
    */
@@ -66,6 +66,7 @@ document.addEventListener("DOMContentLoaded", function() {
       console.log(page);
     }
   }
+
   const helpSection = document.querySelector(".help");
   if (helpSection !== null) {
     new Help(helpSection);
@@ -136,6 +137,7 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     }
   }
+
   document.querySelectorAll(".form-group--dropdown select").forEach(el => {
     new FormSelect(el);
   });
@@ -143,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function() {
   /**
    * Hide elements when clicked on document
    */
-  document.addEventListener("click", function(e) {
+  document.addEventListener("click", function (e) {
     const target = e.target;
     const tagName = target.tagName;
 
@@ -200,14 +202,14 @@ document.addEventListener("DOMContentLoaded", function() {
           if ((parseInt(this.$step.innerText) === 3) && (noOrgChecked() === true)) {
             alert("Musisz zaznaczyć co najmniej jedną organizację");
           } else if (parseInt(this.$step.innerText) === 4) {
-              let failed_fields = [];
-              failed_fields = checkFormInputs().join(", ");
-            if (failed_fields.length > 0 ){
-                alert(`Wypełnij wymienione pola oznczone czerownym opisem! ${failed_fields}`)
+            let failed_fields = [];
+            failed_fields = checkFormInputs().join(", ");
+            if (failed_fields.length > 0) {
+              alert(`Wypełnij wymienione pola oznczone czerownym opisem! ${failed_fields}`)
             } else {
-                fillFinalData();
-            this.currentStep++;
-            this.updateForm();
+              fillFinalData();
+              this.currentStep++;
+              this.updateForm();
             }
           } else {
             this.currentStep++;
@@ -263,6 +265,7 @@ document.addEventListener("DOMContentLoaded", function() {
       this.updateForm();
     }
   }
+
   const form = document.querySelector(".form--steps");
   if (form !== null) {
     new FormSteps(form);
@@ -279,41 +282,41 @@ document.addEventListener("DOMContentLoaded", function() {
   let bags_quantity = 0;
   let organizations_list_title = $(`div[data-step="3"]`).children("h3");
   let messages = {
-      "empty_list": "Brak organizacji przyjmujących zaznaczone przedmioty!<br> " +
-          "Wróć do kroku pierwszego i zmień zaznaczenie.",
-      "pick_one": "Wybierz organizacje, której chcesz pomóc:",
+    "empty_list": "Brak organizacji przyjmujących zaznaczone przedmioty!<br> " +
+      "Wróć do kroku pierwszego i zmień zaznaczenie.",
+    "pick_one": "Wybierz organizacje, której chcesz pomóc:",
   };
 
   /* Save selected categories from step 1 and hide unfitting organizations*/
   btn_next_step1.click(() => {
-      let no_organizations = true;
-      let selected_categories = $("input[name='categories']:checked").map(function () {
-          return $(this).val();
-      }).get();
-      for (let organization of all_organizations) {
-          let categories = $(organization).children(".categories").text();
-          let organization_valid = false;
-          for (let category of categories) {
-              if (selected_categories.includes(category)) {
-                  organization_valid = true;
-              }
-          }
-          if (organization_valid === true) {
-              organization.hidden = false;
-              no_organizations = false;
-          } else {
-              organization.hidden = true;
-          }
+    let no_organizations = true;
+    let selected_categories = $("input[name='categories']:checked").map(function () {
+      return $(this).val();
+    }).get();
+    for (let organization of all_organizations) {
+      let categories = $(organization).children(".categories").text();
+      let organization_valid = false;
+      for (let category of categories) {
+        if (selected_categories.includes(category)) {
+          organization_valid = true;
+        }
       }
-      if (no_organizations === true) {
-          organizations_list_title.html(messages["empty_list"])
+      if (organization_valid === true) {
+        organization.hidden = false;
+        no_organizations = false;
       } else {
-          organizations_list_title.html(messages["pick_one"])
+        organization.hidden = true;
       }
+    }
+    if (no_organizations === true) {
+      organizations_list_title.html(messages["empty_list"])
+    } else {
+      organizations_list_title.html(messages["pick_one"])
+    }
   });
 
   //step_2 check amount of bags
-  btn_next_step2.click(()=>{
+  btn_next_step2.click(() => {
     bags_quantity = parseInt($("input[name='bags']").val()) || 0;
   });
 
@@ -322,10 +325,10 @@ document.addEventListener("DOMContentLoaded", function() {
     let no_org_checked = true;
     let organization_radio = $("input[name='organization']");
     for (let org of organization_radio) {
-        if (org.checked) {
-          no_org_checked = false;
-          checked_organization_name = $(org).nextAll(".description").children(".title").text()
-        }
+      if (org.checked) {
+        no_org_checked = false;
+        checked_organization_name = $(org).nextAll(".description").children(".title").text()
+      }
     }
     return no_org_checked
   }
@@ -333,36 +336,36 @@ document.addEventListener("DOMContentLoaded", function() {
 
   /* Gather all data from previous steps
   * and fill confirmation data*/
-  function fillFinalData(){
-      if (bags_quantity === 1) {
-        $("#bags").text(`${bags_quantity} worek`)
-      } else {
-        $("#bags").text(`${bags_quantity} worków`)
-      }
-      let address = $("input[name='address']").val();
-      let city = $("input[name='city']").val();
-      let postcode = $("input[name='postcode']").val();
-      let phone = $("input[name='phone']").val();
-      let pickup_date = $("input[name='date']").val();
-      let pickup_time = $("input[name='time']").val();
-      let more_info = $("textarea[name='more_info']").val();
-      $("#organization").text(checked_organization_name);
-      $("#address").text(address);
-      $("#city").text(city);
-      $("#postcode").text(postcode);
-      $("#phone").text(phone);
+  function fillFinalData() {
+    if (bags_quantity === 1) {
+      $("#bags").text(`${bags_quantity} worek`)
+    } else {
+      $("#bags").text(`${bags_quantity} worków`)
+    }
+    let address = $("input[name='address']").val();
+    let city = $("input[name='city']").val();
+    let postcode = $("input[name='postcode']").val();
+    let phone = $("input[name='phone']").val();
+    let pickup_date = $("input[name='date']").val();
+    let pickup_time = $("input[name='time']").val();
+    let more_info = $("textarea[name='more_info']").val();
+    $("#organization").text(checked_organization_name);
+    $("#address").text(address);
+    $("#city").text(city);
+    $("#postcode").text(postcode);
+    $("#phone").text(phone);
 
-      $("#date").text(pickup_date);
-      $("#time").text(pickup_time);
-      $("#moreInfo").text(`Uwagi: ${more_info}`);
+    $("#date").text(pickup_date);
+    $("#time").text(pickup_time);
+    $("#moreInfo").text(`Uwagi: ${more_info}`);
   }
-});
 
-//Form data verification functions
-function checkFormInputs() {
-  let failed_fields = [];
-  let elements = document.querySelectorAll("[required]");
-  for (let el of elements) {
+
+  //Form data verification functions
+  function checkFormInputs() {
+    let failed_fields = [];
+    let elements = document.querySelectorAll("[required]");
+    for (let el of elements) {
       let field_is_valid = true;
       let field_type = el.type.toLowerCase();
       switch (field_type) {
@@ -371,77 +374,107 @@ function checkFormInputs() {
           field_is_valid = testInputText(el, field_name);
           break;
         case "date":
-            field_is_valid = testInputDate(el);
-            break;
+          field_is_valid = testInputDate(el);
+          break;
         case "time":
           field_is_valid = testInputTime(el);
           break;
       }
-      if (field_is_valid === false){
+      if (field_is_valid === false) {
         failed_fields.push($(el).parent().text())
       }
+    }
+    return failed_fields
   }
-  return failed_fields
-}
 
-function testInputText(input, type) {
+  function testInputText(input, type) {
     let pattern;
     let field_is_valid;
     switch (type) {
-        case "address":
-            pattern = new RegExp("^[a-zA-Z0-9\/.,ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+( [a-zA-Z0-9\/.,ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+)*$", "gi");
-            break;
-        case "city":
-            pattern = new RegExp("^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+( [a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+)*$", "gi");
-            break;
-        case "postcode":
-            pattern = new RegExp("^[0-9]{2}[-][0-9]{3}$", "g");
-            break;
-        case "phone":
-            pattern = new RegExp("^\\+?[0-9]+([ -][0-9]+)*([/\\][0-9]+)*$", "g");
-            break;
+      case "address":
+        pattern = new RegExp("^[a-zA-Z0-9\/.,ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+( [a-zA-Z0-9\/.,ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+)*$", "gi");
+        break;
+      case "city":
+        pattern = new RegExp("^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+( [a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+)*$", "gi");
+        break;
+      case "postcode":
+        pattern = new RegExp("^[0-9]{2}[-][0-9]{3}$", "g");
+        break;
+      case "phone":
+        pattern = new RegExp("^\\+?[0-9]+([ -][0-9]+)*([/\\][0-9]+)*$", "g");
+        break;
     }
-    if (pattern === undefined){
-        field_is_valid = false;
-        console.log("Error inside testInputText function")
+    if (pattern === undefined) {
+      field_is_valid = false;
+      console.log("Error inside testInputText function")
     } else {
-        field_is_valid = pattern.test(input.value);
+      field_is_valid = pattern.test(input.value);
     }
     addErrorToLabel(input, field_is_valid);
     return field_is_valid;
-}
+  }
 
-function testInputNotEmpty(input) {
+  function testInputNotEmpty(input) {
     let field_is_valid = (input.value !== "");
     addErrorToLabel(input, field_is_valid);
     return field_is_valid;
-}
+  }
 
-function testInputDate(input) {
+  function testInputDate(input) {
     let pattern = new RegExp("^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$", "gi");
     let field_is_valid = (testInputNotEmpty(input) && pattern.test(input.value));
     if (field_is_valid === true) {
-        let form_date = new Date(input.value);
-        let today_date = Date.now();
-        if (form_date < today_date) {
-            field_is_valid = false;
-            alert("Wybierz datę dziesiejszą bądź późniejszą!")
-        }
+      let form_date = new Date(input.value);
+      let today_date = Date.now();
+      if (form_date < today_date) {
+        field_is_valid = false;
+        alert("Wybierz datę dziesiejszą bądź późniejszą!")
+      }
     }
     addErrorToLabel(input, field_is_valid);
     return field_is_valid;
-}
+  }
 
-function testInputTime(input) {
+  function testInputTime(input) {
     let pattern = new RegExp("^[0-9]{2}\:[0-9]{2}$", "gi");
     let field_is_valid = (testInputNotEmpty(input) && pattern.test(input.value));
     addErrorToLabel(input, field_is_valid);
     return field_is_valid;
-}
+  }
 
-function addErrorToLabel(input, is_valid) {
+  function addErrorToLabel(input, is_valid) {
     if (!is_valid) {
-        $(input).parent().addClass("donation-form-error")
+      $(input).parent().addClass("donation-form-error")
     } else {
-        $(input).parent().removeClass("donation-form-error")
-    }}
+      $(input).parent().removeClass("donation-form-error")
+    }
+  }
+
+  let menu_elements = $(".top-menu").children().children();
+  menu_elements.click(function (e) {
+    setActiveElement(menu_elements, e.target);
+  });
+
+
+  function setActiveElement(menu_elements, target_element) {
+    for (let element of menu_elements) {
+      if (target_element === element) {
+        $(element).addClass("active")
+      } else {
+        $(element).removeClass("active")
+      }
+    }
+  }
+
+  function checkActiveElementFromPath(menu_elements) {
+    let path = window.location.href;
+    $(menu_elements).each(function () {
+      if (this.href === path) {
+        $(this).addClass("active")
+      }
+    })
+  }
+
+  checkActiveElementFromPath(menu_elements)
+
+});
