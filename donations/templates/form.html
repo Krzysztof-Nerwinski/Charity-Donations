@@ -87,7 +87,7 @@
             <div class="form-group form-group--inline">
               <label>
                 Liczba 60l worków:
-                <input type="number" name="bags" step="1" min="1" />
+                <input type="number" name="quantity" step="1" min="1" />
               </label>
             </div>
 
@@ -105,7 +105,7 @@
             <div class="form-group form-group--checkbox organization" hidden>
               <div class="categories" hidden>{{ organization.categories.all|show_queryset_ids }}</div>
               <label>
-                <input type="radio" name="organization" value="{{ organization.id }}" />
+                <input type="radio" name="institution" value="{{ organization.id }}" />
                 <span class="checkbox radio"></span>
                 <span class="description">
                   <div class="title">{{ organization.name }}</div>
@@ -140,26 +140,26 @@
                 </div>
 
                 <div class="form-group form-group--inline">
-                  <label>Kod pocztowy<input type="text" name="postcode" placeholder="w formacie XX-XXX" required/></label>
+                  <label>Kod pocztowy<input type="text" name="zip_code" placeholder="w formacie XX-XXX" required/></label>
                 </div>
 
                 <div class="form-group form-group--inline">
-                  <label>Numer telefonu<input type="text" name="phone" placeholder="np. 123-456-789" required/></label>
+                  <label>Numer telefonu<input type="text" name="phone_number" placeholder="np. 123-456-789" required/></label>
                 </div>
               </div>
 
               <div class="form-section--column">
                 <h4>Termin odbioru</h4>
                 <div class="form-group form-group--inline">
-                  <label>Data<input type="date" name="date" required/> </label>
+                  <label>Data<input type="date" name="pick_up_date" required/></label>
                 </div>
 
                 <div class="form-group form-group--inline">
-                  <label>Godzina<input type="time" name="time" required/> </label>
+                  <label>Godzina<input type="time" name="pick_up_time" required/></label>
                 </div>
 
                 <div class="form-group form-group--inline">
-                  <label>Uwagi dla kuriera<textarea name="more_info" rows="5"></textarea></label>
+                  <label>Uwagi dla kuriera<textarea name="pick_up_comment" rows="5"></textarea></label>
                 </div>
               </div>
             </div>

@@ -1,8 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
 
+from donations.forms import DonationForm
 from donations.models import Donation, Institution, Category
 
 
@@ -28,4 +30,6 @@ class AddDonationView(LoginRequiredMixin, View):
                                              'organizations': organizations})
 
     def post(self, request):
-        pass
+        form = DonationForm(request.POST)
+        print(form)
+        return HttpResponse('działaj')

@@ -260,9 +260,11 @@ document.addEventListener("DOMContentLoaded", function () {
      * TODO: validation, send data to server
      */
     submit(e) {
-      e.preventDefault();
-      this.currentStep++;
-      this.updateForm();
+      console.log('dziala')
+      return true
+      // e.preventDefault();
+      // this.currentStep++;
+      // this.updateForm();
     }
   }
 
@@ -317,13 +319,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   //step_2 check amount of bags
   btn_next_step2.click(() => {
-    bags_quantity = parseInt($("input[name='bags']").val()) || 0;
+    bags_quantity = parseInt($("input[name='quantity']").val()) || 0;
   });
 
   //step_3 verification
   function noOrgChecked() {
     let no_org_checked = true;
-    let organization_radio = $("input[name='organization']");
+    let organization_radio = $("input[name='institution']");
     for (let org of organization_radio) {
       if (org.checked) {
         no_org_checked = false;
@@ -344,11 +346,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     let address = $("input[name='address']").val();
     let city = $("input[name='city']").val();
-    let postcode = $("input[name='postcode']").val();
-    let phone = $("input[name='phone']").val();
-    let pickup_date = $("input[name='date']").val();
-    let pickup_time = $("input[name='time']").val();
-    let more_info = $("textarea[name='more_info']").val();
+    let postcode = $("input[name='zip_code']").val();
+    let phone = $("input[name='phone_number']").val();
+    let pickup_date = $("input[name='pick_up_date']").val();
+    let pickup_time = $("input[name='pick_up_time']").val();
+    let more_info = $("textarea[name='pick_up_comment']").val();
     $("#organization").text(checked_organization_name);
     $("#address").text(address);
     $("#city").text(city);
@@ -397,10 +399,10 @@ document.addEventListener("DOMContentLoaded", function () {
       case "city":
         pattern = new RegExp("^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+( [a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+)*$", "gi");
         break;
-      case "postcode":
+      case "zip_code":
         pattern = new RegExp("^[0-9]{2}[-][0-9]{3}$", "g");
         break;
-      case "phone":
+      case "phone_number":
         pattern = new RegExp("^\\+?[0-9]+([ -][0-9]+)*([/\\][0-9]+)*$", "g");
         break;
     }
