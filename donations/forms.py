@@ -8,9 +8,9 @@ class DonationForm(ModelForm):
     class Meta:
         model = Donation
         fields = '__all__'
-
         widgets = {
             'categories': forms.CheckboxSelectMultiple,
+            'institution': forms.RadioSelect,
             'address': forms.TextInput(attrs={'placeholder': 'np. Marszałkowska 111/15'}),
             'city': forms.TextInput(attrs={'placeholder': 'np. Warszawa'}),
             'zip_code': forms.TextInput(attrs={'placeholder': 'w formacie XX-XXX'}),
@@ -19,3 +19,4 @@ class DonationForm(ModelForm):
             'pick_up_time': forms.TextInput(attrs={'type': 'time'}),
             'pick_up_comment': forms.Textarea(attrs={'rows': '5'}),
         }
+

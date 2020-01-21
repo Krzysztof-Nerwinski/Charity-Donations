@@ -18,10 +18,17 @@ class Institution(models.Model):
         (2, 'Organizacja pozarządowa'),
         (3, 'Zbiórka lokalna')
     )
-    name = models.CharField(max_length=256)
-    description = models.TextField(null=True)
+    name = models.CharField(max_length=256, verbose_name='Nazwa')
+    description = models.TextField(null=True, verbose_name='Opis')
     type = models.IntegerField(choices=types, default=1)
     categories = models.ManyToManyField(Category)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'instytucja'
+        verbose_name_plural = 'instytucje'
 
 
 class Donation(models.Model):

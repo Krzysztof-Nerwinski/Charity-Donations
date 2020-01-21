@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %} Panel użytkownika {% endblock %}
+
+{% block header %}
+    <header>
+        {% include 'includes/top_menu.html' %}
+    </header>
+{% endblock %}
+
+{% block content %}
+    {% load additional_template_tags %}
+    <section id="profile" class="help">
+        <h2>Profil Użytkownika</h2>
+        <div class="profile">
+            <p>Imię: {{ user.first_name}}</p>
+            <p>Nazwisko: {{ user.last_name}}</p>
+            <p>email: {{ user.email }}</p>
+        </div>
+        <h3 class="profile">Darowizny: </h3>
+        <table class="profile">
+            <thead>
+            <th>Worki</th>
+            <th>Organizacja</th>
+            <th>Kategorie</th>
+            <th>Data odbioru</th>
+            <th>Godzina odbioru</th>
+            <th>Uwagi</th>
+            </thead>
+            <tbody>
+            {% for donation in donations %}
+                <tr>
+                    <td>{{ donation.quantity }}</td>
+                    <td>{{ donation.institution }}</td>
+                    <td>{{ donation.categories.all|join:', ' }}</td>
+                    <td>{{ donation.pick_up_date }}</td>
+                    <td>{{ donation.pick_up_time }}</td>
+                    <td>{{ donation.pick_up_comment }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+{% endblock %}
+
