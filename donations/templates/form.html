@@ -3,221 +3,230 @@
 
 {% block header %}
     <header class="header--form-page">
-    {% include 'includes/top_menu.html' %}
-      <div class="slogan container container--90">
-        <div class="slogan--item">
-          <h1>
-            Oddaj rzeczy, których już nie chcesz<br />
-            <span class="uppercase">potrzebującym</span>
-          </h1>
+        {% include 'includes/top_menu.html' %}
+        <div class="slogan container container--90">
+            <div class="slogan--item">
+                <h1>
+                    Oddaj rzeczy, których już nie chcesz<br/>
+                    <span class="uppercase">potrzebującym</span>
+                </h1>
 
-          <div class="slogan--steps">
-            <div class="slogan--steps-title">Wystarczą 4 proste kroki:</div>
-            <ul class="slogan--steps-boxes">
-              <li>
-                <div><em>1</em><span>Wybierz rzeczy</span></div>
-              </li>
-              <li>
-                <div><em>2</em><span>Spakuj je w worki</span></div>
-              </li>
-              <li>
-                <div><em>3</em><span>Wybierz fundację</span></div>
-              </li>
-              <li>
-                <div><em>4</em><span>Zamów kuriera</span></div>
-              </li>
-            </ul>
-          </div>
+                <div class="slogan--steps">
+                    <div class="slogan--steps-title">Wystarczą 4 proste kroki:</div>
+                    <ul class="slogan--steps-boxes">
+                        <li>
+                            <div><em>1</em><span>Wybierz rzeczy</span></div>
+                        </li>
+                        <li>
+                            <div><em>2</em><span>Spakuj je w worki</span></div>
+                        </li>
+                        <li>
+                            <div><em>3</em><span>Wybierz fundację</span></div>
+                        </li>
+                        <li>
+                            <div><em>4</em><span>Zamów kuriera</span></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-      </div>
     </header>
 {% endblock %}
 {% block content %}
-{% load additional_template_tags %}
+    {% load additional_template_tags %}
     <section class="form--steps">
-      <div class="form--steps-instructions">
-        <div class="form--steps-container">
-          <h3>Ważne!</h3>
-          <p data-step="1" class="active">
-            Uzupełnij szczegóły dotyczące Twoich rzeczy. Dzięki temu będziemy
-            wiedzieć komu najlepiej je przekazać.
-          </p>
-          <p data-step="2">
-            Uzupełnij szczegóły dotyczące Twoich rzeczy. Dzięki temu będziemy
-            wiedzieć komu najlepiej je przekazać.
-          </p>
-          <p data-step="3">
-           Wybierz jedną, do
-            której trafi Twoja przesyłka.
-          </p>
-          <p data-step="4">Podaj adres oraz termin odbioru rzeczy.</p>
+        <div class="form--steps-instructions">
+            <div class="form--steps-container">
+                <h3>Ważne!</h3>
+                <p data-step="1" class="active">
+                    Uzupełnij szczegóły dotyczące Twoich rzeczy. Dzięki temu będziemy
+                    wiedzieć komu najlepiej je przekazać.
+                </p>
+                <p data-step="2">
+                    Uzupełnij szczegóły dotyczące Twoich rzeczy. Dzięki temu będziemy
+                    wiedzieć komu najlepiej je przekazać.
+                </p>
+                <p data-step="3">
+                    Wybierz jedną, do
+                    której trafi Twoja przesyłka.
+                </p>
+                <p data-step="4">Podaj adres oraz termin odbioru rzeczy.</p>
+            </div>
         </div>
-      </div>
 
-      <div class="form--steps-container">
-        <div class="form--steps-counter">Krok <span>1</span>/5</div>
+        <div class="form--steps-container">
+            <div class="form--steps-counter">Krok <span>1</span>/5</div>
+            <form class="form" method="post"> {% csrf_token %}
+                <!-- STEP 1: class .active is switching steps -->
+                <div data-step="1" class="active">
+                    <h3>Zaznacz co chcesz oddać:</h3>
+                    {% for category_id,category_name in form.categories.field.choices %}
+                        <div class="form-group form-group--checkbox">
+                            <label>
+                                <input type="checkbox" name="categories" value="{{ category_id }}"
+                                       {% if category_id in selected_categories|queryset_ids_as_list %}checked{% endif %}>
+                                <span class="checkbox"></span>
+                                <span class="description">{{ category_name }}</span>
+                            </label>
+                        </div>
+                    {% empty %}
+                        <span class="description">Brak kategorii w bazie danych</span>
+                    {% endfor %}
 
-        <form class="form" method="post"> {% csrf_token %}
-          <!-- STEP 1: class .active is switching steps -->
-          <div data-step="1" class="active">
-            <h3>Zaznacz co chcesz oddać:</h3>
-            {% for category in categories %}
-            <div class="form-group form-group--checkbox">
-              <label>
-                <input type="checkbox" name="categories" value="{{ category.id }}"/>
-                <span class="checkbox"></span>
-                <span class="description">{{ category.name }}</span
-                >
-              </label>
-            </div>
-            {% empty %}
-                <span class="description">Brak kategorii w bazie danych</span>
-            {% endfor %}
-
-            <div class="form-group form-group--buttons">
-              <button type="button" class="btn next-step" id="nextStep1">Dalej</button>
-            </div>
-          </div>
+                    <div class="form-group form-group--buttons">
+                        <button type="button" class="btn next-step" id="nextStep1">Dalej</button>
+                    </div>
+                </div>
 
 
-          <!-- STEP 2 -->
-          <div data-step="2">
-            <h3>Podaj liczbę 60l worków, w które spakowałeś/aś rzeczy:</h3>
+                <!-- STEP 2 -->
+                <div data-step="2">
+                    <h3>Podaj liczbę 60l worków, w które spakowałeś/aś rzeczy:</h3>
 
-            <div class="form-group form-group--inline">
-              <label>
-                Liczba 60l worków:
-                <input type="number" name="quantity" step="1" min="1" />
-              </label>
-            </div>
+                    <div class="form-group form-group--inline">
+                        <label>
+                            Liczba 60l worków:
+                            {{ form.quantity }}
+                            {#                <input type="number" name="quantity" step="1" min="1" />#}
+                        </label>
+                    </div>
 
-            <div class="form-group form-group--buttons">
-              <button type="button" class="btn prev-step">Wstecz</button>
-              <button type="button" class="btn next-step" id="nextStep2">Dalej</button>
-            </div>
-          </div>
+                    <div class="form-group form-group--buttons">
+                        <button type="button" class="btn prev-step">Wstecz</button>
+                        <button type="button" class="btn next-step" id="nextStep2">Dalej</button>
+                    </div>
+                </div>
 
-
-          <!-- STEP 3 -->
-          <div data-step="3">
-            <h3>Wybierz organizacje, której chcesz pomóc:</h3>
-            {% for organization in organizations %}
-            <div class="form-group form-group--checkbox organization" hidden>
-              <div class="categories" hidden>{{ organization.categories.all|show_queryset_ids }}</div>
-              <label>
-                <input type="radio" name="institution" value="{{ organization.id }}" />
-                <span class="checkbox radio"></span>
-                <span class="description">
+                <!-- STEP 3 -->
+                <div data-step="3">
+                    <h3>Wybierz organizacje, której chcesz pomóc:</h3>
+                    {% for organization in organizations %}
+                        <div class="form-group form-group--checkbox organization" hidden>
+                            <div class="categories"
+                                 hidden>{{ organization.categories.all|queryset_ids_as_string }}</div>
+                            <label>
+                                <input type="radio" name="institution" value="{{ organization.id }}"
+                                       {% if organization == form.cleaned_data.institution %}checked{% endif %}/>
+                                <span class="checkbox radio"></span>
+                                <span class="description">
                   <div class="title">{{ organization.name }}</div>
                   <div class="subtitle">{{ organization.description }}</div>
                 </span>
-              </label>
-            </div>
-          {% empty %}
-                <span class="description">Brak organizacji w bazie danych dla wybranych kategorii</span>
-          {% endfor %}
+                            </label>
+                        </div>
+                    {% empty %}
+                        <span class="description">Brak organizacji w bazie danych dla wybranych kategorii</span>
+                    {% endfor %}
 
-            <div class="form-group form-group--buttons">
-              <button type="button" class="btn prev-step">Wstecz</button>
-              <button type="button" class="btn next-step" id="nextStep3">Dalej</button>
-            </div>
-          </div>
-
-
-          <!-- STEP 4 -->
-          <div data-step="4">
-            <h3>Podaj adres oraz termin odbioru rzecz przez kuriera:</h3>
-
-            <div class="form-section form-section--columns">
-              <div class="form-section--column">
-                <h4>Adres odbioru</h4>
-                <div class="form-group form-group--inline">
-                  <label>Ulica<input type="text" name="address" placeholder="np. Marszałkowska 111/15" required/></label>
+                    <div class="form-group form-group--buttons">
+                        <button type="button" class="btn prev-step">Wstecz</button>
+                        <button type="button" class="btn next-step" id="nextStep3">Dalej</button>
+                    </div>
                 </div>
 
-                <div class="form-group form-group--inline">
-                  <label>Miasto<input type="text" name="city" placeholder="np. Warszawa" required/></label>
+
+                <!-- STEP 4 -->
+                <div data-step="4">
+                    <h3>Podaj adres oraz termin odbioru rzecz przez kuriera:</h3>
+                    <span style="font-size: 1.5em">{{ form.non_field_errors }}</span>
+                    <div class="form-section form-section--columns">
+                        <div class="form-section--column">
+                            <h4>Adres odbioru</h4>
+                            <div class="form-group form-group--inline">
+                                <span style="font-size: 1.5em">{{ form.address.errors }}</span>
+                                <label>Ulica{{ form.address }}</label>
+                            </div>
+
+                            <div class="form-group form-group--inline">
+                                <span style="font-size: 1.5em">{{ form.city.errors }}</span>
+                                <label>Miasto{{ form.city }}</label>
+                            </div>
+
+                            <div class="form-group form-group--inline">
+                                <span style="font-size: 1.5em">{{ form.zip_code.errors }}</span>
+                                <label>Kod pocztowy{{ form.zip_code }}</label>
+                            </div>
+
+                            <div class="form-group form-group--inline">
+                                <span style="font-size: 1.5em">{{ form.phone_number.errors }}</span>
+                                <label>Numer telefonu{{ form.phone_number }}</label>
+                            </div>
+                        </div>
+
+                        <div class="form-section--column">
+                            <h4>Termin odbioru</h4>
+                            <div class="form-group form-group--inline">
+                                <span style="font-size: 1.5em">{{ form.pick_up_date.errors }}</span>
+                                <label>Data{{ form.pick_up_date }}</label>
+                            </div>
+
+                            <div class="form-group form-group--inline">
+                                <span style="font-size: 1.5em">{{ form.pick_up_time.errors }}</span>
+                                <label>Godzina{{ form.pick_up_time }}</label>
+                            </div>
+
+                            <div class="form-group form-group--inline">
+                                <span style="font-size: 1.5em">{{ form.pick_up_comment.errors }}</span>
+                                <label>Uwagi dla kuriera{{ form.pick_up_comment }}</label>
+                            </div>
+                            <input type="hidden" name="user" value="{{ request.user.id }}">
+                        </div>
+                    </div>
+                    <div class="form-group form-group--buttons">
+                        <button type="button" class="btn prev-step">Wstecz</button>
+                        <button type="button" class="btn next-step" id="nextLastStep">Dalej</button>
+                    </div>
                 </div>
 
-                <div class="form-group form-group--inline">
-                  <label>Kod pocztowy<input type="text" name="zip_code" placeholder="w formacie XX-XXX" required/></label>
+
+                <!-- STEP 5 -->
+                <div data-step="5">
+                    <h3>Podsumowanie Twojej darowizny</h3>
+
+                    <div class="summary">
+                        <div class="form-section">
+                            <h4>Oddajesz:</h4>
+                            <ul>
+                                <li>
+                                    <span class="icon icon-bag"></span>
+                                    <span id="bags" class="summary--text"></span>
+                                </li>
+
+                                <li>
+                                    <span class="icon icon-hand"></span>
+                                    <span class="summary--text" id="organization"></span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="form-section form-section--columns">
+                            <div class="form-section--column">
+                                <h4>Adres odbioru:</h4>
+                                <ul>
+                                    <li><span id="address"></span></li>
+                                    <li><span id="city"></span></li>
+                                    <li><span id="postcode"></span></li>
+                                    <li><span id="phone"></span></li>
+                                </ul>
+                            </div>
+
+                            <div class="form-section--column">
+                                <h4>Termin odbioru:</h4>
+                                <ul>
+                                    <li><span id="date"></span></li>
+                                    <li><span id="time"></span></li>
+                                    <li><span id="moreInfo"></span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-group--buttons">
+                        <button type="button" class="btn prev-step">Wstecz</button>
+                        <button type="submit" class="btn">Potwierdzam</button>
+                    </div>
                 </div>
-
-                <div class="form-group form-group--inline">
-                  <label>Numer telefonu<input type="text" name="phone_number" placeholder="np. 123-456-789" required/></label>
-                </div>
-              </div>
-
-              <div class="form-section--column">
-                <h4>Termin odbioru</h4>
-                <div class="form-group form-group--inline">
-                  <label>Data<input type="date" name="pick_up_date" required/></label>
-                </div>
-
-                <div class="form-group form-group--inline">
-                  <label>Godzina<input type="time" name="pick_up_time" required/></label>
-                </div>
-
-                <div class="form-group form-group--inline">
-                  <label>Uwagi dla kuriera<textarea name="pick_up_comment" rows="5"></textarea></label>
-                </div>
-              </div>
-            </div>
-            <div class="form-group form-group--buttons">
-              <button type="button" class="btn prev-step">Wstecz</button>
-              <button type="button" class="btn next-step" id="nextLastStep">Dalej</button>
-            </div>
-          </div>
-
-        
-          <!-- STEP 5 -->
-          <div data-step="5">
-            <h3>Podsumowanie Twojej darowizny</h3>
-
-            <div class="summary">
-              <div class="form-section">
-                <h4>Oddajesz:</h4>
-                <ul>
-                  <li>
-                    <span class="icon icon-bag"></span>
-                      <span id="bags" class="summary--text"></span>
-                  </li>
-
-                  <li>
-                    <span class="icon icon-hand"></span>
-                    <span class="summary--text" id="organization"></span>
-                  </li>
-                </ul>
-              </div>
-
-              <div class="form-section form-section--columns">
-                <div class="form-section--column">
-                  <h4>Adres odbioru:</h4>
-                  <ul>
-                      <li><span id="address"></span></li>
-                      <li><span id="city"></span></li>
-                      <li><span id="postcode"></span></li>
-                      <li><span id="phone"></span></li>
-                  </ul>
-                </div>
-
-                <div class="form-section--column">
-                  <h4>Termin odbioru:</h4>
-                  <ul>
-                      <li><span id="date"></span></li>
-                      <li><span id="time"></span></li>
-                      <li><span id="moreInfo"></span></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group form-group--buttons">
-              <button type="button" class="btn prev-step">Wstecz</button>
-              <button type="submit" class="btn">Potwierdzam</button>
-            </div>
-          </div>
-        </form>
-      </div>
+            </form>
+        </div>
     </section>
 {% endblock %}

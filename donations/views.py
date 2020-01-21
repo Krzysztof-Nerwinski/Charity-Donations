@@ -24,12 +24,20 @@ class LandingPageView(View):
 
 class AddDonationView(LoginRequiredMixin, View):
     def get(self, request):
+        form = DonationForm(auto_id=False)
         categories = Category.objects.all()
         organizations = Institution.objects.all()
-        return render(request, 'form.html', {'categories': categories,
-                                             'organizations': organizations})
+        return render(request, 'form.html', {'organizations': organizations,
+                                             'form': form})
 
     def post(self, request):
-        form = DonationForm(request.POST)
-        print(form)
-        return HttpResponse('działaj')
+        form = DonationForm(request.POST, auto_id=False)
+        if form.is_valid():
+            form.save()
+            return render(request, 'form-confirmation.html')
+        organizations = Institution.objects.all()
+        selected_categories = form.cleaned_data.get('categories')
+        return render(request, 'form.html', {'selected_categories': selected_categories,
+                                             'organizations': organizations,
+                                             'form': form})
+

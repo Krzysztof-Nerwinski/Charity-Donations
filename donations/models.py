@@ -1,3 +1,6 @@
+from django.core.validators import MinValueValidator
+from django.db.models import Min
+
 from accounts.models import CustomUser
 from django.db import models
 
@@ -22,7 +25,7 @@ class Institution(models.Model):
 
 
 class Donation(models.Model):
-    quantity = models.IntegerField()
+    quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     categories = models.ManyToManyField(Category)
     institution = models.ForeignKey(Institution, on_delete=models.PROTECT)
     address = models.CharField(max_length=128)
@@ -31,5 +34,5 @@ class Donation(models.Model):
     zip_code = models.CharField(max_length=10)
     pick_up_date = models.DateField()
     pick_up_time = models.TimeField()
-    pick_up_comment = models.TextField()
+    pick_up_comment = models.TextField(blank=True)
     user = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)

@@ -198,8 +198,15 @@ document.addEventListener("DOMContentLoaded", function () {
       this.$next.forEach(btn => {
         btn.addEventListener("click", e => {
           e.preventDefault();
-          //check if user selected any of given organizations on step_3
-          if ((parseInt(this.$step.innerText) === 3) && (noOrgChecked() === true)) {
+          if (parseInt(this.$step.innerText) === 2) {
+            bags_quantity = parseInt($("input[name='quantity']").val()) || 0;
+            if (bags_quantity > 0) {
+              this.currentStep++;
+              this.updateForm();
+            } else {
+              alert("Musisz zadeklarować co najmniej jeden worek!")
+            }
+          } else if ((parseInt(this.$step.innerText) === 3) && (noOrgChecked() === true)) {
             alert("Musisz zaznaczyć co najmniej jedną organizację");
           } else if (parseInt(this.$step.innerText) === 4) {
             let failed_fields = [];
@@ -317,10 +324,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  //step_2 check amount of bags
-  btn_next_step2.click(() => {
-    bags_quantity = parseInt($("input[name='quantity']").val()) || 0;
-  });
 
   //step_3 verification
   function noOrgChecked() {
@@ -403,7 +406,7 @@ document.addEventListener("DOMContentLoaded", function () {
         pattern = new RegExp("^[0-9]{2}[-][0-9]{3}$", "g");
         break;
       case "phone_number":
-        pattern = new RegExp("^\\+?[0-9]+([ -][0-9]+)*([/\\][0-9]+)*$", "g");
+        pattern = new RegExp("^\\+?[0-9]+([ -][0-9]+)*([/\\][0-9]+)$", "g");
         break;
     }
     if (pattern === undefined) {
