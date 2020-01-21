@@ -1839,9 +1839,14 @@ footer .bottom-line--icons a img {
     font-size: 1.6rem;
     width: 75%;
     text-align: center;
+    align-content: center;
     border-collapse: collapse;
 }
 
 .profile table, th, td {
     border: 0.1rem solid black;
+}
+
+.donation-old{
+    background-color: dimgray;
 }

@@ -25,16 +25,28 @@
             <th>Data odbioru</th>
             <th>Godzina odbioru</th>
             <th>Uwagi</th>
+            <th></th>
             </thead>
             <tbody>
             {% for donation in donations %}
-                <tr>
+                <tr {% if donation.is_taken %}class="donation-old" {% endif %}>
                     <td>{{ donation.quantity }}</td>
                     <td>{{ donation.institution }}</td>
                     <td>{{ donation.categories.all|join:', ' }}</td>
                     <td>{{ donation.pick_up_date }}</td>
                     <td>{{ donation.pick_up_time }}</td>
                     <td>{{ donation.pick_up_comment }}</td>
+                    <td>
+                        <form action="{% url 'archive_donation' donation.id%}" method="post">
+                        {% csrf_token %}
+                        {% if not donation.is_taken %}
+                            <button type="submit" class="btn--small">Archiwizuj</button>
+                        {% else %}
+                            <button type="submit" class="btn--small">Przywróć</button>
+                        {% endif %}
+                        </form>
+
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>

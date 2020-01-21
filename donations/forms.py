@@ -7,7 +7,7 @@ from donations.models import Category, Institution, Donation
 class DonationForm(ModelForm):
     class Meta:
         model = Donation
-        fields = '__all__'
+        exclude = ['is_taken']
         widgets = {
             'categories': forms.CheckboxSelectMultiple,
             'institution': forms.RadioSelect,

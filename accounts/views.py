@@ -15,6 +15,6 @@ class SignUp(generic.CreateView):
 @login_required
 def user_profile_view(request):
     if request.method == 'GET':
-        donations = Donation.objects.filter(user=request.user)
+        donations = Donation.objects.filter(user=request.user).order_by('is_taken', 'pick_up_date')
         return render(request, 'user_site.html', {'donations': donations})
 

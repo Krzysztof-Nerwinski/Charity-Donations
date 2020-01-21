@@ -1,7 +1,8 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 
 from donations.forms import DonationForm
@@ -12,7 +13,7 @@ class LandingPageView(View):
     def get(self, request):
         bags_quantity = Donation.objects.aggregate(Sum('quantity'))['quantity__sum']
         backed_institutions = Donation.objects.distinct('institution').count()
-        foundations = Institution.objects.filter(type=1)
+        foundations = Institution.objects.filter(type=1) #todo change to const ("foundations" = 1)
         nongov_institutions = Institution.objects.filter(type=2)
         local_pickups = Institution.objects.filter(type=3)
         return render(request, 'index.html', {'quantity': bags_quantity,
@@ -40,3 +41,11 @@ class AddDonationView(LoginRequiredMixin, View):
                                              'organizations': organizations,
                                              'form': form})
 
+
+@login_required
+def archive_donation(request, donation_id):
+    if request.method == 'POST':
+        donation = Donation.objects.get(id=donation_id)
+        donation.is_taken = False if donation.is_taken else True
+        donation.save()
+        return redirect('profile')
