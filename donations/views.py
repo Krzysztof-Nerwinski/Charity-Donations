@@ -1,21 +1,18 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
-
 from donations.forms import DonationForm
-from donations.models import Donation, Institution, Category
+from donations.models import Donation, Institution, FOUNDATION, ORGANIZATION, LOCAL_COLLECTION
 
 
 class LandingPageView(View):
     def get(self, request):
         bags_quantity = Donation.objects.aggregate(Sum('quantity'))['quantity__sum']
         backed_institutions = Donation.objects.distinct('institution').count()
-        foundations = Institution.objects.filter(type=1)  # todo change to const ("foundations" = 1)
-        nongov_institutions = Institution.objects.filter(type=2)
-        local_pickups = Institution.objects.filter(type=3)
+        foundations = Institution.objects.filter(type=FOUNDATION)
+        nongov_institutions = Institution.objects.filter(type=ORGANIZATION)
+        local_pickups = Institution.objects.filter(type=LOCAL_COLLECTION)
         return render(request, 'index.html', {'quantity': bags_quantity,
                                               'backed_institutions': backed_institutions,
                                               'foundations': foundations,

@@ -1,8 +1,10 @@
 from django.core.validators import MinValueValidator
-from django.db.models import Min
-
 from accounts.models import CustomUser
 from django.db import models
+
+FOUNDATION = 1
+ORGANIZATION = 2
+LOCAL_COLLECTION = 3
 
 
 class Category(models.Model):
@@ -13,14 +15,15 @@ class Category(models.Model):
 
 
 class Institution(models.Model):
+
     types = (
-        (1, 'Fundacja'),
-        (2, 'Organizacja pozarządowa'),
-        (3, 'Zbiórka lokalna')
+        (FOUNDATION, 'Fundacja'),
+        (ORGANIZATION, 'Organizacja pozarządowa'),
+        (LOCAL_COLLECTION, 'Zbiórka lokalna')
     )
     name = models.CharField(max_length=256, verbose_name='Nazwa')
     description = models.TextField(null=True, verbose_name='Opis')
-    type = models.IntegerField(choices=types, default=1)
+    type = models.IntegerField(choices=types, default=FOUNDATION)
     categories = models.ManyToManyField(Category)
 
     def __str__(self):
