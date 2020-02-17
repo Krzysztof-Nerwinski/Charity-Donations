@@ -123,3 +123,5 @@ dmypy.json
 venv/*
 .idea/
 /local/
+/db_dumps/*
+/db_dumps
