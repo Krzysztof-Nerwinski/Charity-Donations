@@ -8,10 +8,14 @@ LOCAL_COLLECTION = 3
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=256, verbose_name='Nazwa')
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = 'Kategoria'
+        verbose_name_plural = 'Kategorie'
 
 
 class Institution(models.Model):
@@ -30,14 +34,14 @@ class Institution(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = 'instytucja'
-        verbose_name_plural = 'instytucje'
+        verbose_name = 'Instytucja'
+        verbose_name_plural = 'Instytucje'
 
 
 class Donation(models.Model):
-    quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)], verbose_name='Worki')
     categories = models.ManyToManyField(Category)
-    institution = models.ForeignKey(Institution, on_delete=models.PROTECT)
+    institution = models.ForeignKey(Institution, on_delete=models.PROTECT, verbose_name='Instytucja')
     address = models.CharField(max_length=128)
     phone_number = models.CharField(max_length=15)
     city = models.CharField(max_length=64)
@@ -45,5 +49,9 @@ class Donation(models.Model):
     pick_up_date = models.DateField()
     pick_up_time = models.TimeField()
     pick_up_comment = models.TextField(blank=True)
-    user = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)
-    is_taken = models.BooleanField(default=False)
+    user = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL, verbose_name='Użytkownik')
+    is_taken = models.BooleanField(default=False, verbose_name="Zrealizowane")
+
+    class Meta:
+        verbose_name = 'Darowizna'
+        verbose_name_plural = 'Darowizny'
