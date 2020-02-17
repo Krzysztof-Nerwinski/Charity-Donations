@@ -4,7 +4,7 @@ from .forms import CustomAuthenticationForm
 from django.contrib.auth import views as auth_views
 from django.contrib import admin
 
-from .views import user_profile_view
+from .views import UserProfileView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -12,5 +12,5 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(authentication_form=CustomAuthenticationForm,
                                                 redirect_authenticated_user=True), name='login'),
     path('', include('django.contrib.auth.urls')),
-    path('profile/', user_profile_view, name="profile"),
+    path('profile/', UserProfileView.as_view(), name="profile"),
 ]

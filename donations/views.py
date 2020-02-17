@@ -13,7 +13,7 @@ class LandingPageView(View):
     def get(self, request):
         bags_quantity = Donation.objects.aggregate(Sum('quantity'))['quantity__sum']
         backed_institutions = Donation.objects.distinct('institution').count()
-        foundations = Institution.objects.filter(type=1) #todo change to const ("foundations" = 1)
+        foundations = Institution.objects.filter(type=1)  # todo change to const ("foundations" = 1)
         nongov_institutions = Institution.objects.filter(type=2)
         local_pickups = Institution.objects.filter(type=3)
         return render(request, 'index.html', {'quantity': bags_quantity,
@@ -42,9 +42,9 @@ class AddDonationView(LoginRequiredMixin, View):
                                              'form': form})
 
 
-@login_required
-def archive_donation(request, donation_id):
-    if request.method == 'POST':
+class ArchiveDonation(LoginRequiredMixin, View):
+
+    def post(self, request, donation_id):
         donation = Donation.objects.get(id=donation_id)
         donation.is_taken = False if donation.is_taken else True
         donation.save()

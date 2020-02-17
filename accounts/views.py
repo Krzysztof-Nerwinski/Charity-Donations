@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views import generic
+from django.views import generic, View
 from accounts.forms import CustomRegistrationForm
 from donations.models import Donation
 
@@ -12,9 +13,9 @@ class SignUp(generic.CreateView):
     template_name = 'registration/register.html'
 
 
-@login_required
-def user_profile_view(request):
-    if request.method == 'GET':
-        donations = Donation.objects.filter(user=request.user).order_by('is_taken', 'pick_up_date')
+class UserProfileView(LoginRequiredMixin, View):
+    def get(self,request):
+        donations = Donation.objects.filter(user=request.user).order_by('is_taken', 'pick_up_date',
+                                                                        'pick_up_time', 'quantity')
         return render(request, 'user_site.html', {'donations': donations})
 
