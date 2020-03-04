@@ -18,3 +18,7 @@ class UserProfileView(LoginRequiredMixin, View):
                                                                         'pick_up_time', 'quantity')
         return render(request, 'user_site.html', {'donations': donations})
 
+
+
+
+

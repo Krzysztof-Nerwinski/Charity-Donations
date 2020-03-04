@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 from django.shortcuts import render, redirect
-from django.views import View
+from django.views import View, generic
 from donations.forms import DonationForm
 from donations.models import Donation, Institution, FOUNDATION, ORGANIZATION, LOCAL_COLLECTION
 
@@ -46,3 +46,8 @@ class ArchiveDonation(LoginRequiredMixin, View):
         donation.is_taken = False if donation.is_taken else True
         donation.save()
         return redirect('profile')
+
+
+class SingleDonationView(LoginRequiredMixin, generic.DetailView):
+    model = Donation
+    context_object_name = 'donation'
