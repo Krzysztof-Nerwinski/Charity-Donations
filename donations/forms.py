@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from donations.models import Category, Institution, Donation
+from donations.models import Donation
 
 
 class DonationForm(ModelForm):
@@ -19,4 +19,3 @@ class DonationForm(ModelForm):
             'pick_up_time': forms.TextInput(attrs={'type': 'time'}),
             'pick_up_comment': forms.Textarea(attrs={'rows': '5'}),
         }
-

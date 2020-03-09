@@ -8,7 +8,7 @@
             Witaj {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}
             <ul class="dropdown">
               <li><a href="{% url 'profile' %}#profile">Profil</a></li>
-              <li><a href="#">Ustawienia</a></li>
+              <li><a href="{% url 'user_edit' %}">Ustawienia</a></li>
               <li><a href="{% url 'logout' %}">Wyloguj</a></li>
             {% if user.is_staff %}
               <li><a href="{% url 'admin:index' %}">Panel Administracyjny</a></li>

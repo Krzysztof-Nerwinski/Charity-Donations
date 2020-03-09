@@ -9,7 +9,7 @@
 
 {% block content %}
   {% load additional_template_tags %}
-  <section id="profile" class="help">
+  <section id="profile" class="profile">
     <h2>Profil Użytkownika</h2>
     <div class="profile">
       <p>Imię: {{ user.first_name }}</p>
@@ -19,17 +19,18 @@
     <h3 class="profile">Darowizny: </h3>
     <table class="profile">
       <thead>
+      <th>*</th>
       <th>Worki</th>
       <th>Organizacja</th>
       <th>Kategorie</th>
       <th>Data odbioru</th>
       <th>Godzina odbioru</th>
       <th>Uwagi</th>
-      <th></th>
       </thead>
       <tbody>
       {% for donation in donations %}
         <tr {% if donation.is_taken %}class="donation-old" {% endif %}>
+          <td>{{ forloop.counter }}</td>
           <td>{{ donation.quantity }}</td>
           <td>{{ donation.institution }}</td>
           <td>{{ donation.categories.all|join:', ' }}</td>
@@ -39,11 +40,9 @@
           <td>
             <form action="{% url 'archive_donation' donation.id %}" method="post">
               {% csrf_token %}
-              {% if not donation.is_taken %}
-                <button type="submit" class="btn--small">Archiwizuj</button>
-              {% else %}
-                <button type="submit" class="btn--small">Przywróć</button>
-              {% endif %}
+              <button type="submit" class="btn--small">
+                {% if not donation.is_taken %}Archiwizuj {% else %}Przywróć {% endif %}
+              </button>
             </form>
           </td>
           <td>
