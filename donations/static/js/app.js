@@ -1,4 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
+
+
+    let menu_elements = $(".top-menu").children().children();
+    menu_elements.click(function (e) {
+        setActiveElement(menu_elements, e.target);
+    });
+
+    checkActiveElementFromPath(menu_elements);
+
+
     /**
      * HomePage - Help section
      */
@@ -467,11 +477,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    let menu_elements = $(".top-menu").children().children();
-    menu_elements.click(function (e) {
-        setActiveElement(menu_elements, e.target);
-    });
-
 
     function setActiveElement(menu_elements, target_element) {
         for (let element of menu_elements) {
@@ -491,7 +496,5 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         })
     }
-
-    checkActiveElementFromPath(menu_elements)
 
 });
