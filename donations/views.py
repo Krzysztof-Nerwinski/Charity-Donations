@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.mail import send_mail
 from django.db.models import Sum
 from django.http import HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect
@@ -51,3 +52,4 @@ class ArchiveDonation(LoginRequiredMixin, View):
 class SingleDonationView(LoginRequiredMixin, generic.DetailView):
     model = Donation
     context_object_name = 'donation'
+

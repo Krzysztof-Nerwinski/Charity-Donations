@@ -120,9 +120,11 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = 'login'
 
+
+""" Database and Email config and credentials in local_settings.py """
 try:
-    from charity.local_settings import DATABASES
+    from charity.local_settings import *
 except ModuleNotFoundError:
-    print("DB config missing in local_settings.py!")
+    print("local_settings.py missing!")
     print("Fill out correct data and try again!")
     exit(0)
