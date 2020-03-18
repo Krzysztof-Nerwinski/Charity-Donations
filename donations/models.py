@@ -25,6 +25,7 @@ class Institution(models.Model):
         (ORGANIZATION, 'Organizacja pozarządowa'),
         (LOCAL_COLLECTION, 'Zbiórka lokalna')
     )
+
     name = models.CharField(max_length=256, verbose_name='Nazwa')
     description = models.TextField(null=True, verbose_name='Opis')
     type = models.IntegerField(choices=types, default=FOUNDATION)

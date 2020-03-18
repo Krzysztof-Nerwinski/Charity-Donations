@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
             this.$el = $el;
             this.$buttonsContainer = $el.querySelector(".help--buttons");
             this.$slidesContainers = $el.querySelectorAll(".help--slides");
+            this.$paginationContainers = $el.querySelectorAll(".help--slides-pagination li");
             this.currentSlide = this.$buttonsContainer.querySelector(".active").parentElement.dataset.id;
             this.init();
         }
@@ -52,6 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if (el.dataset.id === this.currentSlide) {
                     el.classList.add("active");
+                    this.changePage(e)
                 }
             });
         }
@@ -61,9 +63,28 @@ document.addEventListener("DOMContentLoaded", function () {
          */
         changePage(e) {
             e.preventDefault();
-            const page = e.target.dataset.page;
+            // const max_results = 2;
+            // const page = e.target.dataset.page;
+            // const pagination_btn = e.target;
+            // let institutions = Array.from(this.$slidesContainers[this.currentSlide - 1].lastElementChild.children);
+            // institutions.forEach(function (item, index) {
+            //     if (((page - 1) * max_results <= index) && (index < page * max_results)) {
+            //         item.classList.add("active")
+            //     } else {
+            //         item.classList.remove("active")
+            //     }
+            // });
 
-            console.log(page);
+
+            // Buttons Active class change
+            this.$paginationContainers.forEach(el => {
+                if (pagination_btn !== el.firstElementChild) {
+                    el.firstElementChild.classList.remove('active')
+                } else {
+                    el.firstElementChild.classList.add('active')
+                }
+            });
+
         }
     }
 
@@ -198,7 +219,9 @@ document.addEventListener("DOMContentLoaded", function () {
             this.$next.forEach(btn => {
                 btn.addEventListener("click", e => {
                     e.preventDefault();
-                    if (parseInt(this.$step.innerText) === 2) {
+
+                    /** todo: refactor validation **/
+                    if (parseInt(this.currentStep) === 2) {
                         bags_quantity = parseInt($("input[name='quantity']").val()) || 0;
                         if (bags_quantity > 0) {
                             this.currentStep++;
@@ -206,9 +229,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         } else {
                             alert("Musisz zadeklarować co najmniej jeden worek!")
                         }
-                    } else if ((parseInt(this.$step.innerText) === 3) && (noOrgChecked() === true)) {
+                    } else if ((parseInt(this.currentStep) === 3) && (noOrgChecked() === true)) {
                         alert("Musisz zaznaczyć co najmniej jedną organizację");
-                    } else if (parseInt(this.$step.innerText) === 4) {
+                    } else if (parseInt(this.currentStep) === 4) {
                         let failed_fields = [];
                         failed_fields = checkFormInputs().join(", ");
                         if (failed_fields.length > 0) {

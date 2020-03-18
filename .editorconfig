@@ -18,6 +18,14 @@ max_line_length = 119
 [*.html]
 indent_size = 2
 
+# Use 2 spaces for the css files
+[*.css]
+indent_size = 2
+
+# Use 2 spaces for the scss files
+[*.scss]
+indent_size = 2
+
 # The JSON files contain newlines inconsistently
 [*.json]
 indent_size = 2

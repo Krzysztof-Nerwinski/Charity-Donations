@@ -9,16 +9,13 @@ from donations.models import Donation, Institution, FOUNDATION, ORGANIZATION, LO
 
 class LandingPageView(View):
     def get(self, request):
-        bags_quantity = Donation.objects.aggregate(Sum('quantity'))['quantity__sum']
-        backed_institutions = Donation.objects.distinct('institution').count()
-        foundations = Institution.objects.filter(type=FOUNDATION)
-        nongov_institutions = Institution.objects.filter(type=ORGANIZATION)
-        local_pickups = Institution.objects.filter(type=LOCAL_COLLECTION)
-        return render(request, 'index.html', {'quantity': bags_quantity,
-                                              'backed_institutions': backed_institutions,
-                                              'foundations': foundations,
-                                              'nongov_institutions': nongov_institutions,
-                                              'local_pickups': local_pickups})
+        donations_counters = {
+            'bags_quantity': Donation.objects.aggregate(Sum('quantity'))['quantity__sum'],
+            'backed_institutions': Donation.objects.distinct('institution').count()
+        }
+        all_institutions = Institution.objects.all()
+        return render(request, 'index.html', {'donations_counters': donations_counters,
+                                              'all_institutions': all_institutions})
 
 
 class AddDonationView(LoginRequiredMixin, View):
@@ -26,7 +23,7 @@ class AddDonationView(LoginRequiredMixin, View):
         form = DonationForm(auto_id=False)
         organizations = Institution.objects.all()
         return render(request, 'donations/form.html', {'organizations': organizations,
-                                             'form': form})
+                                                       'form': form})
 
     def post(self, request):
         form = DonationForm(request.POST, auto_id=False)
@@ -36,12 +33,12 @@ class AddDonationView(LoginRequiredMixin, View):
         organizations = Institution.objects.all()
         selected_categories = form.cleaned_data.get('categories')
         return render(request, 'donations/form.html', {'selected_categories': selected_categories,
-                                             'organizations': organizations,
-                                             'form': form})
+                                                       'organizations': organizations,
+                                                       'form': form})
 
 
 class ArchiveDonation(LoginRequiredMixin, View):
-    def get(self,request,donation_id):
+    def get(self, request, donation_id):
         raise Http404('Archiwizacja możliwa tyko poprzez przyciski w profilu i w szczegółowym widoku darowizny')
 
     def post(self, request, donation_id):

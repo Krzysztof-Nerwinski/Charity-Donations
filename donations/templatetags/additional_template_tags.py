@@ -17,3 +17,11 @@ def queryset_ids_as_list(somequery):
     for category in somequery:
         result.append(category.id)
     return result
+
+
+@register.filter(name="type_equal_to")
+def type_filter(some_query, value):
+    result = []
+    for item in some_query:
+        result.append(item) if item.type == value else False
+    return result
