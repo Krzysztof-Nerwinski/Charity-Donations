@@ -4,11 +4,10 @@ from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import send_mail
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
-from django.utils.encoding import force_bytes, force_text, force_str
+from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views import View
 
@@ -48,13 +47,20 @@ class SignUp(View):
                 signup_form.add_error(None, error_msg)
             else:
                 user.save()
-                messages.success(request, 'Email aktywacyjny został wysłany. Dziękujemy za rejestrację!')
+                user_mail_domain = user.email.split("@")[1]
+                message = 'Email aktywacyjny został wysłany. Dziękujemy za rejestrację! '
+                link = f"<a href='http://{user_mail_domain}' class='messages-link'>Przejdź do swojej poczty</a>"
+                confirmation = message + link
+                messages.success(request, confirmation)
                 return redirect('login')
         return render(request, 'registration/register.html', {'form': signup_form})
 
 
 class ActivationView(View):
     def get(self, request, unameb64, token):
+        if request.user.is_authenticated:
+            messages.error(request, "Obecne konto jest już aktywne, w celu aktywacji innego konta wyloguj się")
+            return redirect('profile')
         try:
             username = force_str(urlsafe_base64_decode(unameb64))
             user = CustomUser.objects.get(username=username)

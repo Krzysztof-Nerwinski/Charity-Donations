@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -9,6 +10,7 @@
   <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
 </head>
 <body>
+
 {% block header %}
   <header class="header--main-page">
     {% include 'includes/top_menu.html' %}
@@ -22,10 +24,11 @@
     </div>
   </header>
 {% endblock %}
+
 {% if messages %}
   <div class="profile">
       {% for message in messages %}
-        <p><b>{{ message }}</b></p>
+        <p class="messages-{{ message.tags }}">{{ message|safe }}</p>
       {% endfor %}
   </div>
 {% endif %}
@@ -33,6 +36,7 @@
 {% block content %}
 {% endblock %}
 
+{% block footer %}
 <footer>
   <div id="contact" class="contact">
     <h2>Skontaktuj się z nami</h2>
@@ -60,9 +64,12 @@
     </div>
   </div>
 </footer>
+{% endblock %}
 
 <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
 <script src="{% static 'js/app.js' %}"></script>
+{% block add_js %}
+{% endblock %}
 
 </body>
 </html>
