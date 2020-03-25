@@ -1,5 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+    let error_messages = $('.messages-error').html();
+    if ((window.location.pathname === "/") && (error_messages)) {
+        alert(error_messages)
+    }
+
 
     let menu_elements = $(".top-menu").children().children();
     menu_elements.click(function (e) {
@@ -496,5 +501,16 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         })
     }
+
+    let contact_form = $(`[name="contact_form"]`);
+    contact_form.on("submit", (e) => {
+        let first_name = e.target.querySelector("[name=name]");
+        let last_name = e.target.querySelector("[name=surname]");
+        let message = e.target.querySelector("textarea");
+        if (!first_name.value || !last_name.value || !message.value) {
+            alert('Musisz wypełnić wszystkie pola!');
+            e.preventDefault()
+        }
+    });
 
 });

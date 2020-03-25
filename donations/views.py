@@ -1,11 +1,17 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.db.models import Sum
-from django.http import HttpResponseNotFound, Http404
+from django.http import Http404
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
+from django.utils.translation import ugettext as _
 from django.views import View, generic
+
+from accounts.models import CustomUser
 from donations.forms import DonationForm
-from donations.models import Donation, Institution, FOUNDATION, ORGANIZATION, LOCAL_COLLECTION
+from donations.models import Donation, Institution
+from charity.local_settings import EMAIL_HOST_USER
 
 
 class LandingPageView(View):
@@ -53,3 +59,24 @@ class SingleDonationView(LoginRequiredMixin, generic.DetailView):
     model = Donation
     context_object_name = 'donation'
 
+
+class ContactMailView(View):
+    def post(self, request):
+        name = request.POST.get('name')
+        surname = request.POST.get('surname')
+        message = request.POST.get('message')
+        subject = _(f'Wiadomość od {name} {surname} poprzez stronę Charity')
+        message = render_to_string('donations/contact_email.html', {
+            'first_name': name,
+            'message': message})
+        admin_mail_list = [user.email for user in CustomUser.objects.filter(is_staff=True)]
+        try:
+            send_mail(subject=subject, message=message, recipient_list=admin_mail_list, from_email=EMAIL_HOST_USER)
+        except Exception as exc:
+            print('Błąd: ', exc)
+            error_msg = _('Błąd przy wysyłaniu wiadomości. '
+                          'Spróbuj ponownie lub jeśli widzisz tę wiadomość kolejny raz skontaktuj się z nami.')
+            messages.error(request, error_msg)
+            return redirect('index')
+        else:
+            return render(request, 'donations/contact_email_sent.html')
