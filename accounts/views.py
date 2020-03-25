@@ -2,8 +2,6 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, update_session_auth_hash, logout
 from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, \
-    PasswordResetCompleteView
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import Http404
 from django.shortcuts import render, redirect
@@ -12,12 +10,19 @@ from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views import View
-
-from accounts.forms import CustomRegistrationForm, UserChangeForm, CustomPasswordChangeForm, CustomAuthenticationForm, \
-    CustomPasswordResetForm
+from donations.models import Donation
+from django.utils.translation import gettext as _
 from accounts.models import CustomUser
 from accounts.tokens import account_activation_token
-from donations.models import Donation
+from accounts.forms import (CustomRegistrationForm,
+                            CustomAuthenticationForm,
+                            CustomPasswordResetForm,
+                            CustomPasswordChangeForm)
+from django.contrib.auth.views import (LoginView,
+                                       PasswordResetView,
+                                       PasswordResetDoneView,
+                                       PasswordResetConfirmView,
+                                       PasswordResetCompleteView)
 
 
 class SignUp(View):
@@ -45,14 +50,15 @@ class SignUp(View):
                 user.email_user(subject=subject, message=message)
             except Exception as exc:
                 print('Błąd: ', exc)
-                error_msg = 'Błąd przy wysyłaniu wiadomości aktywacyjnej, użytkownik nie został utworzony. ' \
-                            'Spróbuj ponownie, jeśli widzisz tę wiadomość kolejny raz skontaktuj się z nami.'
+                error_msg = _('Błąd przy wysyłaniu wiadomości aktywacyjnej, użytkownik nie został utworzony. '
+                              'Spróbuj ponownie, jeśli widzisz tę wiadomość kolejny raz skontaktuj się z nami.')
                 signup_form.add_error(None, error_msg)
             else:
                 user.save()
                 user_mail_domain = user.email.split("@")[1]
-                message = 'Email aktywacyjny został wysłany. Dziękujemy za rejestrację! '
-                link = f"<a href='http://{user_mail_domain}' class='messages-link'>Przejdź do swojej poczty</a>"
+                message = _('Email aktywacyjny został wysłany. Dziękujemy za rejestrację! ')
+                link = f"<a href='http://{user_mail_domain}' class='messages-link'>" \
+                       + _('Przejdź do swojej poczty') + '</a>'
                 confirmation = message + link
                 messages.success(request, confirmation)
                 return redirect('login')
@@ -62,7 +68,7 @@ class SignUp(View):
 class ActivationView(View):
     def get(self, request, unameb64, token):
         if request.user.is_authenticated:
-            messages.error(request, "Obecne konto jest już aktywne, w celu aktywacji innego konta wyloguj się")
+            messages.error(request, _('Obecne konto jest już aktywne, w celu aktywacji innego konta wyloguj się'))
             return redirect('profile')
         try:
             username = force_str(urlsafe_base64_decode(unameb64))
@@ -72,7 +78,7 @@ class ActivationView(View):
         if user is not None and account_activation_token.check_token(user, token):
             user.is_active = True
             user.save()
-            messages.success(request, 'Aktywacja konta zakończona powodzeniem')
+            messages.success(request, _('Aktywacja konta zakończona powodzeniem'))
             return redirect('login')
         else:
             return render(request, 'registration/account_activation_invalid.html')
@@ -91,7 +97,7 @@ class UserProfileView(LoginRequiredMixin, View):
                                                                             'pick_up_time', 'quantity')
             return render(request, 'user_site.html', {'donations': donations})
         else:
-            raise Http404('Użytkownik podany w sesji nie jest zalogowany')
+            raise Http404(_('Użytkownik podany w sesji nie jest zalogowany'))
 
 
 class ProfileChangeView(LoginRequiredMixin, View):
@@ -104,7 +110,7 @@ class ProfileChangeView(LoginRequiredMixin, View):
             return render(request, 'registration/profile_change.html', {'user_form': user_form,
                                                                         'password_form': password_form})
         else:
-            raise Http404('Użytkownik podany w sesji nie jest zalogowany')
+            raise Http404(_('Użytkownik podany w sesji nie jest zalogowany'))
 
     def post(self, request):
         if 'profile_change' in request.POST:
@@ -115,10 +121,10 @@ class ProfileChangeView(LoginRequiredMixin, View):
                 user = authenticate(username=username, password=password)
                 if user is not None:
                     user_form.save()
-                    messages.success(request, 'Dane użytkownika zostały zmienione')
+                    messages.success(request, _('Dane użytkownika zostały zmienione'))
                     return redirect('profile')
                 else:
-                    user_form.add_error(None, f'Podane błędne hasło dla użytkownika {username}')
+                    user_form.add_error(None, _('Podane błędne hasło dla użytkownika') + username)
 
             password_form = CustomPasswordChangeForm(user=request.user)
             return render(request, 'registration/profile_change.html', {'user_form': user_form,
@@ -130,7 +136,7 @@ class ProfileChangeView(LoginRequiredMixin, View):
                 update_session_auth_hash(request, request.user)
                 password_form.save()
                 logout(request)
-                messages.success(request, 'Hasło zostało zmienione')
+                messages.success(request, _('Hasło zostało zmienione'))
                 return redirect('login')
             user_form = UserChangeForm(instance=request.user)
             return render(request, 'registration/profile_change.html', {'user_form': user_form,

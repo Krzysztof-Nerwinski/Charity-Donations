@@ -43,8 +43,6 @@ class CustomRegistrationForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super(UserCreationForm, self).save(commit=False)
-        user.username = self.cleaned_data['email']
-        user.set_password(self.cleaned_data['password'])
         user.is_active = False
         if commit:
             user.save()
