@@ -502,7 +502,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
     }
 
-    let contact_form = $(`[name="contact_form"]`);
+    let contact_form = $("[name=contact_form]");
     contact_form.on("submit", (e) => {
         let first_name = e.target.querySelector("[name=name]");
         let last_name = e.target.querySelector("[name=surname]");

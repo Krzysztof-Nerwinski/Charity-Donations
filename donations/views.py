@@ -61,22 +61,31 @@ class SingleDonationView(LoginRequiredMixin, generic.DetailView):
 
 
 class ContactMailView(View):
+
+    @staticmethod
+    def add_error(request, exception=None):
+        if exception: print('Błąd: ', exception)
+        error_msg = _('Błąd przy wysyłaniu wiadomości. Upewnij się, że wypełnione są wszystkie pola formularza. '
+                      'Spróbuj ponownie lub jeśli widzisz tę wiadomość kolejny raz skontaktuj się z nami.')
+        messages.error(request, error_msg)
+
     def post(self, request):
         name = request.POST.get('name')
         surname = request.POST.get('surname')
         message = request.POST.get('message')
-        subject = _(f'Wiadomość od {name} {surname} poprzez stronę Charity')
-        message = render_to_string('donations/contact_email.html', {
-            'first_name': name,
-            'message': message})
-        admin_mail_list = [user.email for user in CustomUser.objects.filter(is_staff=True)]
-        try:
-            send_mail(subject=subject, message=message, recipient_list=admin_mail_list, from_email=EMAIL_HOST_USER)
-        except Exception as exc:
-            print('Błąd: ', exc)
-            error_msg = _('Błąd przy wysyłaniu wiadomości. '
-                          'Spróbuj ponownie lub jeśli widzisz tę wiadomość kolejny raz skontaktuj się z nami.')
-            messages.error(request, error_msg)
-            return redirect('index')
+        if name and surname and message:
+            subject = _(f'Wiadomość od {name} {surname} poprzez stronę Charity')
+            message = render_to_string('donations/contact_email.html', {
+                'first_name': name,
+                'message': message})
+            admin_mail_list = [user.email for user in CustomUser.objects.filter(is_staff=True)]
+            try:
+                send_mail(subject=subject, message=message, recipient_list=admin_mail_list, from_email=EMAIL_HOST_USER)
+            except Exception as exc:
+                self.add_error(request, exc)
+                return redirect('index')
+            else:
+                return render(request, 'donations/contact_email_sent.html')
         else:
-            return render(request, 'donations/contact_email_sent.html')
+            self.add_error(request)
+            return redirect('index')
