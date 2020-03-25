@@ -1890,6 +1890,7 @@ footer .bottom-line--icons a img {
 
 .errorlist {
   color: red;
+  list-style: none;
 }
 
 .messages-success {

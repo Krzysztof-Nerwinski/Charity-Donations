@@ -1,15 +1,12 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm, PasswordResetForm
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
-
+from django.utils.translation import gettext as _
 from accounts.models import CustomUser
 
 
 class CustomRegistrationForm(UserCreationForm):
-    validation_errors = {
-        'email_exists': 'Użytkownik o podanym adresie email już istnieje',
-    }
 
     class Meta:
         model = CustomUser
@@ -31,7 +28,7 @@ class CustomRegistrationForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data['email']
         if CustomUser.objects.filter(email=email).exists():
-            raise ValidationError(self.validation_errors['email_exists'])
+            raise ValidationError(_('Użytkownik o podanym adresie email już istnieje'))
         return email
 
     def clean_password2(self):
@@ -63,9 +60,6 @@ class CustomAuthenticationForm(AuthenticationForm):
 
 
 class UserChangeForm(ModelForm):
-    validation_errors = {
-        'email_exists': 'Użytkownik o podanym adresie email już istnieje, wybierz inny adres',
-    }
 
     class Meta:
         model = CustomUser
@@ -82,13 +76,13 @@ class UserChangeForm(ModelForm):
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if CustomUser.objects.filter(email=email).exists() and email != self.instance.email and email:
-            raise ValidationError(self.validation_errors['email_exists'])
+            raise ValidationError(_('Użytkownik o podanym adresie email już istnieje, wybierz inny adres'))
         return email
 
     def clean(self):
         cleaned_data = super().clean()
         if not cleaned_data.get('first_name') and not cleaned_data.get('last_name') and not cleaned_data.get('email'):
-            raise ValidationError('Wypełnij co najmniej jedno pole poza hasłem')
+            raise ValidationError(_('Wypełnij co najmniej jedno pole poza hasłem'))
 
     def save(self, *args, **kwargs):
         current_user = self.instance
@@ -112,4 +106,14 @@ class CustomPasswordChangeForm(PasswordChangeForm):
         old_password = cleaned_data.get("old_password")
         new_password = cleaned_data.get("new_password1")
         if old_password == new_password:
-            self.add_error('new_password1', 'Nowe hasło musi się róznić od poprzedniego')
+            self.add_error('new_password1', _('Nowe hasło musi się róznić od poprzedniego'))
+
+
+class CustomPasswordResetForm(PasswordResetForm):
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not CustomUser.objects.filter(email=email).exists():
+            raise ValidationError(_('Podany adres nie jest zarejestrowany na naszej stronie'), code='invalid_email')
+        return email
+

@@ -2,16 +2,19 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, update_session_auth_hash, logout
 from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, \
+    PasswordResetCompleteView
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
+from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views import View
 
-from accounts.forms import CustomRegistrationForm, UserChangeForm, CustomPasswordChangeForm, CustomAuthenticationForm
+from accounts.forms import CustomRegistrationForm, UserChangeForm, CustomPasswordChangeForm, CustomAuthenticationForm, \
+    CustomPasswordResetForm
 from accounts.models import CustomUser
 from accounts.tokens import account_activation_token
 from donations.models import Donation
@@ -134,3 +137,22 @@ class ProfileChangeView(LoginRequiredMixin, View):
                                                                         'password_form': password_form})
         else:
             return Http404('Błąd formularza')
+
+
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'registration/password_reset.html'
+    success_url = reverse_lazy('password_reset_sent')
+    form_class = CustomPasswordResetForm
+
+
+class CustomPasswordResetSentView(PasswordResetDoneView):
+    template_name = 'registration/password_reset_sent.html'
+
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'registration/password_reset_confirmation.html'
+    success_url = reverse_lazy('password_reset_complete')
+
+
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'registration/password_reset_completed.html'
