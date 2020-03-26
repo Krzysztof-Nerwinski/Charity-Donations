@@ -1,15 +1,15 @@
 from django import forms
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm, PasswordResetForm
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 from django.utils.translation import gettext as _
-from accounts.models import CustomUser
+from apps.accounts.models import CustomUser
 
 
 class CustomRegistrationForm(UserCreationForm):
-
     class Meta:
-        model = CustomUser
+        model = get_user_model()
         fields = {'first_name', 'last_name', 'password', 'password2', 'email'}
         widgets = {
             'first_name': forms.TextInput(attrs={'placeholder': 'Imię'}),
@@ -41,11 +41,12 @@ class CustomRegistrationForm(UserCreationForm):
             )
         return password2
 
-    def save(self, commit=True):
-        user = super(UserCreationForm, self).save(commit=False)
-        user.is_active = False
-        if commit:
-            user.save()
+    def save(self, commit=False):
+        email = self.cleaned_data['email']
+        password = self.cleaned_data['password']
+        extra_fields = {'first_name': self.cleaned_data['first_name'],
+                        'last_name': self.cleaned_data['last_name']}
+        user = self._meta.model.objects.create_user(email=email, password=password, **extra_fields)
         return user
 
 
@@ -58,7 +59,6 @@ class CustomAuthenticationForm(AuthenticationForm):
 
 
 class CustomUserChangeForm(ModelForm):
-
     class Meta:
         model = CustomUser
         fields = ['first_name', 'last_name', 'email', 'password']
@@ -114,4 +114,3 @@ class CustomPasswordResetForm(PasswordResetForm):
         if not CustomUser.objects.filter(email=email).exists():
             raise ValidationError(_('Podany adres nie jest zarejestrowany na naszej stronie'), code='invalid_email')
         return email
-

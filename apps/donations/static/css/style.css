@@ -491,6 +491,7 @@ h2:after {
 .btn--small {
   font-size: 1.3rem;
   padding: 0.5em 0.6em;
+  float: none;
 }
 
 /* line 29, scss/modules/_buttons.scss */

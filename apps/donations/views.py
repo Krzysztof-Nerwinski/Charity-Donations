@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.views import View, generic
 
-from accounts.models import CustomUser
+from apps.accounts.models import CustomUser
 from apps.donations.forms import DonationForm
 from apps.donations.models import Donation, Institution
 from charity.local_settings import EMAIL_HOST_USER

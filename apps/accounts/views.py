@@ -12,13 +12,13 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views import View
 from apps.donations.models import Donation
 from django.utils.translation import gettext as _
-from accounts.models import CustomUser
-from accounts.tokens import account_activation_token
-from accounts.forms import (CustomRegistrationForm,
-                            CustomAuthenticationForm,
-                            CustomPasswordResetForm,
-                            CustomPasswordChangeForm,
-                            CustomUserChangeForm)
+from apps.accounts.models import CustomUser
+from apps.accounts.tokens import account_activation_token
+from apps.accounts.forms import (CustomRegistrationForm,
+                                 CustomAuthenticationForm,
+                                 CustomPasswordResetForm,
+                                 CustomPasswordChangeForm,
+                                 CustomUserChangeForm)
 from django.contrib.auth.views import (LoginView,
                                        PasswordResetView,
                                        PasswordResetDoneView,
@@ -31,7 +31,7 @@ class SignUp(View):
         if request.user.is_authenticated:
             return redirect('profile')
         signup_form = CustomRegistrationForm()
-        return render(request, 'registration/register.html', {'form': signup_form})
+        return render(request, 'accounts/registration/register.html', {'form': signup_form})
 
     def post(self, request):
         if request.user.is_authenticated:
@@ -41,10 +41,10 @@ class SignUp(View):
             user = signup_form.save(commit=False)
             current_site = get_current_site(request)
             subject = 'Aktywuj swoje konto na charity.com'
-            message = render_to_string('registration/registration_mail.html', {
+            message = render_to_string('accounts/registration/registration_mail.html', {
                 'user': user,
                 'domain': current_site.domain,
-                'uname': urlsafe_base64_encode(force_bytes(user.username)),
+                'uname': urlsafe_base64_encode(force_bytes(user.email)),
                 'token': account_activation_token.make_token(user)
             })
             try:
@@ -58,12 +58,12 @@ class SignUp(View):
                 user.save()
                 user_mail_domain = user.email.split("@")[1]
                 message = _('Email aktywacyjny został wysłany. Dziękujemy za rejestrację! ')
-                link = f"<a href='http://{user_mail_domain}' class='messages-link'>" \
+                link = f"<a href='http://{user_mail_domain}' class='messages-link' target='_blank''>" \
                        + _('Przejdź do swojej poczty') + '</a>'
                 confirmation = message + link
                 messages.success(request, confirmation)
                 return redirect('login')
-        return render(request, 'registration/register.html', {'form': signup_form})
+        return render(request, 'accounts/registration/register.html', {'form': signup_form})
 
 
 class ActivationView(View):
@@ -82,11 +82,11 @@ class ActivationView(View):
             messages.success(request, _('Aktywacja konta zakończona powodzeniem'))
             return redirect('login')
         else:
-            return render(request, 'registration/account_activation_invalid.html')
+            return render(request, 'accounts/registration/account_activation_invalid.html')
 
 
 class CustomLoginView(LoginView):
-    template_name = 'registration/login.html'
+    template_name = 'accounts/registration/login.html'
     authentication_form = CustomAuthenticationForm
     redirect_authenticated_user = True
 
@@ -96,7 +96,7 @@ class UserProfileView(LoginRequiredMixin, View):
         if request.user.is_authenticated:
             donations = Donation.objects.filter(user=request.user).order_by('is_taken', 'pick_up_date',
                                                                             'pick_up_time', 'quantity')
-            return render(request, 'user_site.html', {'donations': donations})
+            return render(request, 'accounts/user_site.html', {'donations': donations})
         else:
             raise Http404(_('Użytkownik podany w sesji nie jest zalogowany'))
 
@@ -108,8 +108,8 @@ class ProfileChangeView(LoginRequiredMixin, View):
             user = request.user
             user_form = CustomUserChangeForm(instance=user)
             password_form = CustomPasswordChangeForm(user=request.user)
-            return render(request, 'registration/profile_change.html', {'user_form': user_form,
-                                                                        'password_form': password_form})
+            return render(request, 'accounts/registration/profile_change.html', {'user_form': user_form,
+                                                                                 'password_form': password_form})
         else:
             raise Http404(_('Użytkownik podany w sesji nie jest zalogowany'))
 
@@ -128,8 +128,8 @@ class ProfileChangeView(LoginRequiredMixin, View):
                     user_form.add_error(None, _('Podane błędne hasło dla użytkownika') + username)
 
             password_form = CustomPasswordChangeForm(user=request.user)
-            return render(request, 'registration/profile_change.html', {'user_form': user_form,
-                                                                        'password_form': password_form})
+            return render(request, 'accounts/registration/profile_change.html', {'user_form': user_form,
+                                                                                 'password_form': password_form})
 
         elif 'password_change' in request.POST:
             password_form = CustomPasswordChangeForm(data=request.POST, user=request.user)
@@ -140,26 +140,26 @@ class ProfileChangeView(LoginRequiredMixin, View):
                 messages.success(request, _('Hasło zostało zmienione'))
                 return redirect('login')
             user_form = UserChangeForm(instance=request.user)
-            return render(request, 'registration/profile_change.html', {'user_form': user_form,
-                                                                        'password_form': password_form})
+            return render(request, 'accounts/registration/profile_change.html', {'user_form': user_form,
+                                                                                 'password_form': password_form})
         else:
             return Http404('Błąd formularza')
 
 
 class CustomPasswordResetView(PasswordResetView):
-    template_name = 'registration/password_reset.html'
+    template_name = 'accounts/registration/password_reset.html'
     success_url = reverse_lazy('password_reset_sent')
     form_class = CustomPasswordResetForm
 
 
 class CustomPasswordResetSentView(PasswordResetDoneView):
-    template_name = 'registration/password_reset_sent.html'
+    template_name = 'accounts/registration/password_reset_sent.html'
 
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
-    template_name = 'registration/password_reset_confirmation.html'
+    template_name = 'accounts/registration/password_reset_confirmation.html'
     success_url = reverse_lazy('password_reset_complete')
 
 
 class CustomPasswordResetCompleteView(PasswordResetCompleteView):
-    template_name = 'registration/password_reset_completed.html'
+    template_name = 'accounts/registration/password_reset_completed.html'
