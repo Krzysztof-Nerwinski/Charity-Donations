@@ -8,6 +8,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
   <title>{% block title %}{{ title }}{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+  <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.ico' %}"/>
 </head>
 <body>
 
@@ -41,7 +42,7 @@
     <div id="contact" class="contact">
       <h2>Skontaktuj się z nami</h2>
       <h3>Formularz kontaktowy</h3>
-      <form name="contact_form" action="{% url 'contact_mail' %}" method="post"> {% csrf_token %}
+      <form id="contact_form" action="{% url 'contact_mail' %}" method="post"> {% csrf_token %}
         <div class="form-group form-group--50">
           <input type="text" name="name" placeholder="Imię" value="{{ user.first_name }}">
         </div>

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from donations.views import SingleDonationView, ContactMailView
+from apps.donations.views import SingleDonationView, ContactMailView
 from . import views
 from .views import ArchiveDonation
 

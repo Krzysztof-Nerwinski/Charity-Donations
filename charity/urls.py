@@ -18,5 +18,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('', include('accounts.urls')),
-    path('', include('donations.urls')),
+    path('', include('apps.donations.urls')),
 ]

@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class DonationsConfig(AppConfig):
-    name = 'donations'
+    name = 'apps.donations'
     verbose_name = "Darowizny"

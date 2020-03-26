@@ -287,7 +287,7 @@ document.addEventListener("DOMContentLoaded", function () {
             this.slides.forEach(slide => {
                 slide.classList.remove("active");
 
-                if (slide.dataset.step == this.currentStep) {
+                if (parseInt(slide.dataset.step) === this.currentStep) {
                     slide.classList.add("active");
                 }
             });
@@ -317,7 +317,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let checked_organization_name = undefined;
     let bags_quantity = 0;
     let organizations_list_title = $(`div[data-step="3"]`).children("h3");
-    let messages = {
+    const messages = {
         "empty_list": "Brak organizacji przyjmujących zaznaczone przedmioty!<br> " +
             "Wróć do kroku pierwszego i zmień zaznaczenie.",
         "pick_one": "Wybierz organizacje, której chcesz pomóc:",
@@ -342,6 +342,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 no_organizations = false;
             } else {
                 organization.hidden = true;
+                organization.querySelector("input").checked = false;
             }
         }
         if (no_organizations === true) {
@@ -502,15 +503,49 @@ document.addEventListener("DOMContentLoaded", function () {
         })
     }
 
-    let contact_form = $("[name=contact_form]");
-    contact_form.on("submit", (e) => {
-        let first_name = e.target.querySelector("[name=name]");
-        let last_name = e.target.querySelector("[name=surname]");
-        let message = e.target.querySelector("textarea");
-        if (!first_name.value || !last_name.value || !message.value) {
-            alert('Musisz wypełnić wszystkie pola!');
-            e.preventDefault()
+    class ContactForm {
+        constructor(form) {
+            this.$form = form;
+            this.$inputs = form.querySelectorAll("input");
+            this.$textareas = form.querySelectorAll("textarea");
+            this.init();
         }
-    });
+
+        init() {
+            this.addEvents();
+        }
+
+        addEvents() {
+            this.$form.addEventListener("submit", (e) => this.submit(e))
+        }
+
+        submit(e) {
+            if (this.check_if_values_not_empty(this.$inputs, this.$textareas)) {
+                return true
+            } else {
+                alert("Musisz wypełnić wszystkie pola formularza!");
+                e.preventDefault()
+            }
+        }
+
+        check_if_values_not_empty(...elements) {
+            let valid = true;
+            for (let list of elements) {
+                for (let el of list) {
+                    if (!el.value) {
+                        valid = false;
+                    }
+                }
+            }
+            return valid
+        }
+
+    }
+
+
+    const contact_form = document.querySelector("#contact_form");
+    if (contact_form !== null) {
+        new ContactForm(contact_form)
+    }
 
 });

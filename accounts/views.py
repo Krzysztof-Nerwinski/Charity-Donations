@@ -10,14 +10,15 @@ from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views import View
-from donations.models import Donation
+from apps.donations.models import Donation
 from django.utils.translation import gettext as _
 from accounts.models import CustomUser
 from accounts.tokens import account_activation_token
 from accounts.forms import (CustomRegistrationForm,
                             CustomAuthenticationForm,
                             CustomPasswordResetForm,
-                            CustomPasswordChangeForm)
+                            CustomPasswordChangeForm,
+                            CustomUserChangeForm)
 from django.contrib.auth.views import (LoginView,
                                        PasswordResetView,
                                        PasswordResetDoneView,
@@ -105,7 +106,7 @@ class ProfileChangeView(LoginRequiredMixin, View):
     def get(self, request):
         if request.user.is_authenticated:
             user = request.user
-            user_form = UserChangeForm(instance=user)
+            user_form = CustomUserChangeForm(instance=user)
             password_form = CustomPasswordChangeForm(user=request.user)
             return render(request, 'registration/profile_change.html', {'user_form': user_form,
                                                                         'password_form': password_form})
@@ -114,7 +115,7 @@ class ProfileChangeView(LoginRequiredMixin, View):
 
     def post(self, request):
         if 'profile_change' in request.POST:
-            user_form = UserChangeForm(request.POST, instance=request.user)
+            user_form = CustomUserChangeForm(request.POST, instance=request.user)
             if user_form.is_valid():
                 username = request.user.username
                 password = user_form.cleaned_data.get('password')

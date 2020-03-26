@@ -57,7 +57,7 @@ class CustomAuthenticationForm(AuthenticationForm):
                                                                  'label': 'Hasło'}))
 
 
-class UserChangeForm(ModelForm):
+class CustomUserChangeForm(ModelForm):
 
     class Meta:
         model = CustomUser

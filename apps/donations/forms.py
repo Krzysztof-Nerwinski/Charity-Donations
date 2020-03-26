@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from donations.models import Donation
+from apps.donations.models import Donation
 
 
 class DonationForm(ModelForm):

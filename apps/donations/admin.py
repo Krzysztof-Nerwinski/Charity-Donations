@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.db.models import Case, When, Value
 
-from donations.models import Institution, Donation, Category
+from apps.donations.models import Institution, Donation, Category
 
 
 def get_categories(obj):

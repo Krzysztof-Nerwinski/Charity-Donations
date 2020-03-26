@@ -125,3 +125,4 @@ venv/*
 /local/
 /db_dumps/*
 /db_dumps
+/apps/donations/migrations/
