@@ -12,55 +12,24 @@
     <h2>Zmień dane konta</h2>
     <p class="profile">Wypełnij pola które chcesz zmienić oraz wprowadź obecne hasło</p><br>
 
-    {% if user_form.errors %}
-      <p class="profile profile-error">
-        {% if user_form.errors.items|length == 1 %}{% trans "Please correct the error below." %}{% else %}
-          {% trans "Please correct the errors below." %}{% endif %} <br><br>
-        {% for error in user_form.non_field_errors %}
-          {{ error }}
-        {% endfor %}
-      </p>
-    {% endif %}
+    {% include 'includes/check_form_errors.html' with form=user_form %}
     <form action="" method="post" class="user-change-form"> {% csrf_token %}
-      {% for field in user_form %}
-        <div class="user-change-fields">
-          {{ field.errors }}
-          {{ field.label_tag }} {{ field }}
-          {% if field.help_text %}
-            <p class="user-change-fields">{{ field.help_text|safe }}</p>
-          {% endif %}
-        </div>
-      {% endfor %}
-      <input type="submit" value="Zapisz zmiany" name="profile_change">
+      {% include 'includes/default_form_fields.html' with form=user_form %} <br>
+      <input type="submit" value="Zapisz zmiany" name="profile_change" class="btn">
     </form>
 
     <h2>Zmień hasło</h2>
     <p class="profile">{% trans 'Please enter your old password, for security’s sake, and then enter your new password twice so we can verify you typed it in correctly.' %}</p>
     <br>
 
-    {% if password_form.errors %}
-      <p class="profile profile-error">
-        {% if password_form.errors.items|length == 1 %}{% trans "Please correct the error below." %}{% else %}
-          {% trans "Please correct the errors below." %}{% endif %}
-      </p>
-    {% endif %}
-    {% for error in password_form.non_field_errors %}
-      {{ error }}
-    {% endfor %}
+    {% include 'includes/check_form_errors.html' with form=password_form %}
     <form action="" method="post" class="user-change-form"> {% csrf_token %}
-
-      {% for field in password_form %}
-        <div class="user-change-fields">
-          {{ field.errors }}
-          {{ field.label_tag }} {{ field }}
-          {% if field.help_text %}
-            <p class="user-change-fields">{{ field.help_text|safe }}</p>
-          {% endif %}
-        </div>
-      {% endfor %}
-      <input type="submit" value="Zmień hasło" name="password_change">
+      {% include 'includes/default_form_fields.html' with form=password_form %} <br>
+      <input type="submit" value="Zmień hasło" name="password_change" class="btn">
     </form>
-  </div><br>
+
+  </div>
+  <br>
 
 
 {% endblock %}

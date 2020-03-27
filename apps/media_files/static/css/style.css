@@ -1624,6 +1624,7 @@ footer .bottom-line--icons a img {
   max-width: 580px;
   width: 100%;
   margin-top: 30px;
+  align-items: center;
 }
 
 /* line 31, scss/style.scss */
@@ -1844,7 +1845,7 @@ footer .bottom-line--icons a img {
   text-align: center;
   align-content: center;
   border-collapse: collapse;
-  margin: 0 auto;
+  margin: 0 auto 1em auto;
 
 }
 
@@ -1885,6 +1886,11 @@ footer .bottom-line--icons a img {
   margin: 0 auto;
 }
 
+.field-help-text {
+  font-size: 0.8em;
+  list-style: none;
+}
+
 .profile-error {
   color: red;
 }
@@ -1905,3 +1911,4 @@ footer .bottom-line--icons a img {
 .messages-error {
   color: red;
 }
+

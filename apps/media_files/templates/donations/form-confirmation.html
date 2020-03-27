@@ -1,13 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% load i18n %}
 {% block title %} Potwierdzenie {% endblock %}
 
 {% block header %}
-    <header class="header--form-page">
-        {% include 'includes/top_menu.html' %}
-        <div class="slogan container container--90">
-            <h2>
-                Dziękujemy za przesłanie formularza. Na maila prześlemy wszelkie informacje o odbiorze.
-            </h2>
-        </div>
-    </header>
+  <header class="header--form-page">
+    {% include 'includes/top_menu.html' %}
+    <div class="slogan container container--90">
+      <h2>{% trans 'Dziękujemy za przesłanie formularza. Na maila prześlemy wszelkie informacje o odbiorze.' %}</h2>
+    </div>
+  </header>
 {% endblock %}

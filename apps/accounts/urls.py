@@ -12,7 +12,7 @@ urlpatterns = [
     re_path(r'^activate/(?P<unameb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
             acc_views.ActivationView.as_view(),
             name='activate'),
-    path('register/', acc_views.SignUp.as_view(), name='register'),
+    path('register/', acc_views.SignUpView.as_view(), name='register'),
     path('password_reset/', acc_views.CustomPasswordResetView.as_view(), name='password_reset'),
     path('password_reset/sent/', acc_views.CustomPasswordResetSentView.as_view(), name='password_reset_sent'),
     path('password_reset/<uidb64>/<token>/',

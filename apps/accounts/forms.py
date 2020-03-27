@@ -1,6 +1,10 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm, PasswordResetForm
+from django.contrib.auth.forms import (UserCreationForm,
+                                       AuthenticationForm,
+                                       PasswordChangeForm,
+                                       PasswordResetForm,
+                                       SetPasswordForm)
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 from django.utils.translation import gettext as _
@@ -8,9 +12,11 @@ from apps.accounts.models import CustomUser
 
 
 class CustomRegistrationForm(UserCreationForm):
+    password = None
+
     class Meta:
         model = get_user_model()
-        fields = {'first_name', 'last_name', 'password', 'password2', 'email'}
+        fields = ('first_name', 'last_name', 'email', 'password1', 'password2')
         widgets = {
             'first_name': forms.TextInput(attrs={'placeholder': 'Imię'}),
             'last_name': forms.TextInput(attrs={'placeholder': 'Nazwisko'}),
@@ -23,7 +29,9 @@ class CustomRegistrationForm(UserCreationForm):
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
         self.fields['email'].required = True
-        self.fields['password1'].required = False
+        password_help_text = self.fields['password1'].help_text
+        insert_class = " class='field-help-text'"
+        self.fields['password1'].help_text = password_help_text[:3] + insert_class + password_help_text[3:]
 
     def clean_email(self):
         email = self.cleaned_data['email']
@@ -32,7 +40,7 @@ class CustomRegistrationForm(UserCreationForm):
         return email
 
     def clean_password2(self):
-        password = self.cleaned_data.get("password")
+        password = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password and password != password2:
             raise ValidationError(
@@ -43,7 +51,7 @@ class CustomRegistrationForm(UserCreationForm):
 
     def save(self, commit=False):
         email = self.cleaned_data['email']
-        password = self.cleaned_data['password']
+        password = self.cleaned_data['password1']
         extra_fields = {'first_name': self.cleaned_data['first_name'],
                         'last_name': self.cleaned_data['last_name']}
         user = self._meta.model.objects.create_user(email=email, password=password, **extra_fields)
@@ -51,18 +59,21 @@ class CustomRegistrationForm(UserCreationForm):
 
 
 class CustomAuthenticationForm(AuthenticationForm):
-    username = forms.CharField(widget=forms.EmailInput(attrs={'autofocus': True,
-                                                              'placeholder': 'Email',
-                                                              'autocomplete': 'email'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Hasło',
-                                                                 'label': 'Hasło'}))
+
+    def __init__(self, *args, **kwargs):
+        super(CustomAuthenticationForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs['autocomplete'] = 'email'
+        self.fields['username'].widget.attrs['placeholder'] = _('Email')
+        self.fields['password'].label = _('Hasło')
+        self.fields['password'].widget.attrs['placeholder'] = _('Hasło')
 
 
 class CustomUserChangeForm(ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'email', 'password']
-        widgets = {'password': forms.PasswordInput()}
+        fields = ('first_name', 'last_name', 'email', 'password')
+        widgets = {'first_name': forms.TextInput(attrs={'autocomplete': 'given-name'}),
+                   'password': forms.PasswordInput()}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -99,12 +110,27 @@ class CustomUserChangeForm(ModelForm):
 
 class CustomPasswordChangeForm(PasswordChangeForm):
 
+    def __init__(self, *args, **kwargs):
+        super(CustomPasswordChangeForm, self).__init__(*args, **kwargs)
+        password_help_text = self.fields['new_password1'].help_text
+        insert_class = " class='field-help-text'"
+        self.fields['new_password1'].help_text = password_help_text[:3] + insert_class + password_help_text[3:]
+
     def clean(self):
         cleaned_data = super().clean()
         old_password = cleaned_data.get("old_password")
         new_password = cleaned_data.get("new_password1")
         if old_password == new_password:
             self.add_error('new_password1', _('Nowe hasło musi się róznić od poprzedniego'))
+
+
+class CustomPasswordResetConfirmForm(SetPasswordForm):
+
+    def __init__(self, *args, **kwargs):
+        super(CustomPasswordResetConfirmForm, self).__init__(*args, **kwargs)
+        password_help_text = self.fields['new_password1'].help_text
+        insert_class = " class='field-help-text'"
+        self.fields['new_password1'].help_text = password_help_text[:3] + insert_class + password_help_text[3:]
 
 
 class CustomPasswordResetForm(PasswordResetForm):

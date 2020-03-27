@@ -18,7 +18,8 @@ from apps.accounts.forms import (CustomRegistrationForm,
                                  CustomAuthenticationForm,
                                  CustomPasswordResetForm,
                                  CustomPasswordChangeForm,
-                                 CustomUserChangeForm)
+                                 CustomUserChangeForm,
+                                 CustomPasswordResetConfirmForm)
 from django.contrib.auth.views import (LoginView,
                                        PasswordResetView,
                                        PasswordResetDoneView,
@@ -26,7 +27,7 @@ from django.contrib.auth.views import (LoginView,
                                        PasswordResetCompleteView)
 
 
-class SignUp(View):
+class SignUpView(View):
     def get(self, request):
         if request.user.is_authenticated:
             return redirect('profile')
@@ -158,6 +159,7 @@ class CustomPasswordResetSentView(PasswordResetDoneView):
 
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    form_class = CustomPasswordResetConfirmForm
     template_name = 'accounts/password_reset_confirmation.html'
     success_url = reverse_lazy('password_reset_complete')
 
