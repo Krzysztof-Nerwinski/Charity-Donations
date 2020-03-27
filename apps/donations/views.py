@@ -21,8 +21,8 @@ class LandingPageView(View):
             'backed_institutions': Donation.objects.distinct('institution').count()
         }
         all_institutions = Institution.objects.all()
-        return render(request, 'index.html', {'donations_counters': donations_counters,
-                                              'all_institutions': all_institutions})
+        return render(request, 'donations/index.html', {'donations_counters': donations_counters,
+                                                        'all_institutions': all_institutions})
 
 
 class AddDonationView(LoginRequiredMixin, View):

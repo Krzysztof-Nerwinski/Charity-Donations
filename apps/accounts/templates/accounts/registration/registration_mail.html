@@ -1,8 +1,0 @@
-{% autoescape off %}
-Cześć {{ user.username }},
-
-W celu potwierdzenia aktywacji konta przejdź na poniższy link:
-
-http://{{ domain }}{% url 'activate' unameb64=uname token=token %}
-
-{% endautoescape %}

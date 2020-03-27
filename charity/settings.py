@@ -51,10 +51,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'charity.urls'
 
+TEMPLATE_DIR = os.path.join(BASE_DIR, "apps/media_files/templates")
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -104,10 +106,11 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
+# Common static files
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'apps/media_files/static')]
 
-STATIC_URL = '/static/'
+# App specific static files
+STATIC_URL = '/apps/media_files/static/'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
