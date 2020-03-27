@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %} Panel użytkownika {% endblock %}
+
+{% block header %}
+  <header>
+    {% include 'includes/top_menu.html' %}
+  </header>
+{% endblock %}
+
+{% block content %}
+  {% load additional_template_tags %}
+  <section id="profile" class="profile">
+    <h2>Profil Użytkownika</h2>
+    <div class="profile">
+      <p>Imię: {{ user.first_name }}</p>
+      <p>Nazwisko: {{ user.last_name }}</p>
+      <p>email: {{ user.email }}</p>
+    </div>
+    <h3 class="profile">Darowizny: </h3>
+    <table class="profile">
+      <thead>
+      <th>*</th>
+      <th>Worki</th>
+      <th>Organizacja</th>
+      <th>Kategorie</th>
+      <th>Data odbioru</th>
+      <th>Godzina odbioru</th>
+      <th>Uwagi</th>
+      </thead>
+      <tbody>
+      {% for donation in donations %}
+        <tr {% if donation.is_taken %}class="donation-old" {% endif %}>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ donation.quantity }}</td>
+          <td>{{ donation.institution }}</td>
+          <td>{{ donation.categories.all|join:', ' }}</td>
+          <td>{{ donation.pick_up_date }}</td>
+          <td>{{ donation.pick_up_time }}</td>
+          <td>{{ donation.pick_up_comment }}</td>
+          <td>
+            <form action="{% url 'archive_donation' donation.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn--small">
+                {% if not donation.is_taken %}Archiwizuj {% else %}Przywróć {% endif %}
+              </button>
+            </form>
+          </td>
+          <td>
+            <a href="{% url 'donation' donation.pk %}">
+              <button type="submit" class="btn--small">Szczegóły</button>
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}
+
