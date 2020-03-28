@@ -94,6 +94,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'apps.accounts.password_validators.BigAndSmallLetterPasswordValidator',
     },
+    {
+        'NAME': 'apps.accounts.password_validators.ContainsDigitAndSpecialSignPasswordValidator',
+    },
 ]
 
 # Internationalization
