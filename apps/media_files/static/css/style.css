@@ -1844,23 +1844,37 @@ footer .bottom-line--icons a img {
   width: 100%;
   text-align: center;
   align-content: center;
-  border-collapse: collapse;
-  margin: 0 auto 1em auto;
-
+  margin: 1rem auto;
 }
 
-.profile table, th, td {
+.user--donation {
   border: 0.1rem solid black;
+    border-collapse: collapse;
+    text-align: center;
+    align-content: center;
+    width: 60%;
+    margin: 1rem auto;
 }
 
-.profile table {
-  width: 60%;
-  margin-bottom: 1em;
+.user--donation form {
+  display: inline-block;
 }
 
-.donation-old {
+.user--donation th, td {
+  border: 0.1rem solid black;
+  margin: 0.1rem;
+}
+
+.user--donation-old {
+  border: 0.1rem solid black;
   background-color: dimgray;
 }
+
+.user--donation-active {
+  border: 0.1rem solid black;
+  background-color: white;
+}
+
 
 .donation-detailed {
   text-align: center;

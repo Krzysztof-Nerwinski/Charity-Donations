@@ -10,7 +10,7 @@
           <li><a href="{% url 'profile' %}#profile">Profil</a></li>
           <li><a href="{% url 'user_edit' %}">Ustawienia</a></li>
           {% if user.is_staff %}
-            <li><a href="{% url 'admin:index' %}">Panel Administracyjny</a></li>
+            <li><a href="{% url 'admin:index' %}">Administracja</a></li>
           {% endif %}
           <li><a href="{% url 'logout' %}">Wyloguj</a></li>
         </ul>
