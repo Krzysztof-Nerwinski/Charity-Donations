@@ -1873,11 +1873,31 @@ footer .bottom-line--icons a img {
   width: 70px;
 }
 
+.user-change-fields {
+  display: inline-block;
+  text-align: right;
+  margin-bottom: 0.5em;
+  clear: both;
+  width: 100%;
+
+}
+
 .user-change-fields label {
   display: inline-block;
   text-align: right;
-  width: 200px;
-  margin: 0.5em;
+  float: left;
+  clear: left;
+  padding: 0.5em;
+  margin: 0.2em;
+  width: 30%;
+}
+
+.user-change-fields input {
+  display: inline-block;
+  float: left;
+  clear: right;
+  padding: 0.5em;
+  margin: 0.2em;
 }
 
 .user-change-form {
@@ -1889,6 +1909,7 @@ footer .bottom-line--icons a img {
 .field-help-text {
   font-size: 0.8em;
   list-style: none;
+  clear: both;
 }
 
 .profile-error {
