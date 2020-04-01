@@ -39,7 +39,10 @@ class SignUpView(View):
             return redirect('profile')
         signup_form = CustomRegistrationForm(request.POST)
         if signup_form.is_valid():
-            user = signup_form.save(commit=False)
+            user = signup_form.save(commit=False) # save to DB only if activation mail is sent
+            user.is_active = False
+            user.username = user.email
+
             current_site = get_current_site(request)
             subject = 'Aktywuj swoje konto na charity.com'
             message = render_to_string('accounts/registration_mail.html', {
@@ -51,7 +54,7 @@ class SignUpView(View):
             try:
                 user.email_user(subject=subject, message=message)
             except Exception as exc:
-                print('Błąd: ', exc)
+                print(_('Błąd: '), exc)
                 error_msg = _('Błąd przy wysyłaniu wiadomości aktywacyjnej, użytkownik nie został utworzony. '
                               'Spróbuj ponownie, jeśli widzisz tę wiadomość kolejny raz skontaktuj się z nami.')
                 signup_form.add_error(None, error_msg)

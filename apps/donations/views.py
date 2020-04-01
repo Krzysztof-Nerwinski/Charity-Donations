@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.db.models import Sum
 from django.http import Http404
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.views import View, generic
@@ -49,7 +49,7 @@ class ArchiveDonation(LoginRequiredMixin, View):
         raise Http404('Archiwizacja możliwa tyko poprzez przyciski w profilu i w szczegółowym widoku darowizny')
 
     def post(self, request, donation_id):
-        donation = Donation.objects.get(id=donation_id)
+        donation = get_object_or_404(Donation, id=donation_id)
         donation.is_taken = False if donation.is_taken else True
         donation.save()
         return redirect('profile')

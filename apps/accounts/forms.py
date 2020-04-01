@@ -4,9 +4,10 @@ from django.contrib.auth.forms import (UserCreationForm,
                                        AuthenticationForm,
                                        PasswordChangeForm,
                                        PasswordResetForm,
-                                       SetPasswordForm)
+                                       SetPasswordForm, UserChangeForm)
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
+from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 from apps.accounts.models import CustomUser
 
@@ -18,14 +19,15 @@ class CustomRegistrationForm(UserCreationForm):
         model = get_user_model()
         fields = ('first_name', 'last_name', 'email', 'password1', 'password2')
         widgets = {
-            'first_name': forms.TextInput(attrs={'placeholder': 'Imię'}),
+            'first_name': forms.TextInput(attrs={'placeholder': 'Imię',
+                                                 'autofocus': True}),
             'last_name': forms.TextInput(attrs={'placeholder': 'Nazwisko'}),
             'email': forms.TextInput(attrs={'type': 'email',
                                             'placeholder': 'Email'}),
         }
 
     def __init__(self, *args, **kwargs):
-        super(CustomRegistrationForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
         self.fields['email'].required = True
@@ -33,28 +35,11 @@ class CustomRegistrationForm(UserCreationForm):
         insert_class = " class='field-help-text'"
         self.fields['password1'].help_text = password_help_text[:3] + insert_class + password_help_text[3:]
 
-    def clean_email(self):
-        email = self.cleaned_data['email']
-        if CustomUser.objects.filter(email=email).exists():
-            raise ValidationError(_('Użytkownik o podanym adresie email już istnieje'))
-        return email
-
-    def clean_password2(self):
-        password = self.cleaned_data.get("password1")
-        password2 = self.cleaned_data.get("password2")
-        if password and password != password2:
-            raise ValidationError(
-                self.error_messages['password_mismatch'],
-                code='password_mismatch',
-            )
-        return password2
-
-    def save(self, commit=False):
-        email = self.cleaned_data['email']
-        password = self.cleaned_data['password1']
-        extra_fields = {'first_name': self.cleaned_data['first_name'],
-                        'last_name': self.cleaned_data['last_name']}
-        user = self._meta.model.objects.create_user(email=email, password=password, **extra_fields)
+    def save(self, commit=True):
+        user = super(CustomRegistrationForm, self).save(commit=False)
+        user.username = user.email
+        if commit:
+            user.save()
         return user
 
 
@@ -68,9 +53,26 @@ class CustomAuthenticationForm(AuthenticationForm):
         self.fields['password'].widget.attrs['placeholder'] = _('Hasło')
 
 
+class CustomAdminUserChangeForm(UserChangeForm):
+
+    def __init__(self, *args, **kwargs):
+        super(CustomAdminUserChangeForm, self).__init__(*args, **kwargs)
+        self.fields['username'].disabled = True
+
+    def save(self, commit=True):
+        super(CustomAdminUserChangeForm, self).save(commit=False)
+        self.instance.username = self.instance.email
+        if commit:
+            self.instance.save()
+            self._save_m2m()
+        else:
+            self.save_m2m = self._save_m2m
+        return self.instance
+
+
 class CustomUserChangeForm(ModelForm):
     class Meta:
-        model = CustomUser
+        model = get_user_model()
         fields = ('first_name', 'last_name', 'email', 'password')
         widgets = {'first_name': forms.TextInput(attrs={'autocomplete': 'given-name'}),
                    'password': forms.PasswordInput()}
@@ -95,7 +97,7 @@ class CustomUserChangeForm(ModelForm):
 
     def save(self, *args, **kwargs):
         current_user = self.instance
-        user = CustomUser.objects.get(pk=current_user.pk)
+        user = get_object_or_404(CustomUser, pk=current_user.pk)
         new_email = self.cleaned_data.get('email')
         new_first_name = self.cleaned_data.get('first_name')
         new_last_name = self.cleaned_data.get('last_name')

@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.db.models import Case, When, Value
+from django.utils.translation import ugettext as _
 
 from apps.donations.models import Institution, Donation, Category
 
@@ -15,8 +16,8 @@ def donation_archive(modeladmin, request, queryset):
     ))
 
 
-get_categories.short_description = "Kategorie"
-donation_archive.short_description = "Zmień status darowizny"
+get_categories.short_description = _('Kategorie')
+donation_archive.short_description = _('Zmień status darowizny')
 
 
 @admin.register(Category)
