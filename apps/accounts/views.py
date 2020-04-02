@@ -39,7 +39,7 @@ class SignUpView(View):
             return redirect('profile')
         signup_form = CustomRegistrationForm(request.POST)
         if signup_form.is_valid():
-            user = signup_form.save(commit=False) # save to DB only if activation mail is sent
+            user = signup_form.save(commit=False)  # save to DB only if activation mail is sent
             user.is_active = False
             user.username = user.email
 
@@ -86,8 +86,7 @@ class ActivationView(View):
             messages.success(request, _('Aktywacja konta zakończona powodzeniem'))
             return redirect('login')
         else:
-            return render(request,
-                          'accounts/account_activation_invalid.html')
+            return render(request, 'accounts/account_activation_invalid.html')
 
 
 class CustomLoginView(LoginView):
@@ -101,7 +100,7 @@ class UserProfileView(LoginRequiredMixin, View):
         if request.user.is_authenticated:
             donations = Donation.objects.filter(user=request.user).order_by('is_taken', 'pick_up_date',
                                                                             'pick_up_time', 'quantity')
-            return render(request, '../templates/accounts/user_site.html', {'donations': donations})
+            return render(request, 'accounts/user_site.html', {'donations': donations})
         else:
             raise Http404(_('Użytkownik podany w sesji nie jest zalogowany'))
 
@@ -111,7 +110,7 @@ class ProfileChangeView(LoginRequiredMixin, View):
     def get(self, request):
         if request.user.is_authenticated:
             user = request.user
-            user_form = CustomUserChangeForm(instance=user)
+            user_form = CustomUserChangeForm(request, instance=user)
             password_form = CustomPasswordChangeForm(user=request.user)
             return render(request, 'accounts/profile_change.html', {'user_form': user_form,
                                                                     'password_form': password_form})
@@ -120,14 +119,14 @@ class ProfileChangeView(LoginRequiredMixin, View):
 
     def post(self, request):
         if 'profile_change' in request.POST:
-            user_form = CustomUserChangeForm(request.POST, instance=request.user)
+            user_form = CustomUserChangeForm(request, request.POST, instance=request.user)
             if user_form.is_valid():
                 username = request.user.username
                 password = user_form.cleaned_data.get('password')
                 user = authenticate(username=username, password=password)
                 if user is not None:
                     user_form.save()
-                    messages.success(request, _('Dane użytkownika zostały zmienione'))
+                    messages.success(self.request, _('Dane użytkownika zostały zmienione'))
                     return redirect('profile')
                 else:
                     user_form.add_error(None, _('Podane błędne hasło dla użytkownika') + username)
@@ -144,7 +143,7 @@ class ProfileChangeView(LoginRequiredMixin, View):
                 logout(request)
                 messages.success(request, _('Hasło zostało zmienione'))
                 return redirect('login')
-            user_form = UserChangeForm(instance=request.user)
+            user_form = CustomUserChangeForm(request, instance=request.user)
             return render(request, 'accounts/profile_change.html', {'user_form': user_form,
                                                                     'password_form': password_form})
         else:

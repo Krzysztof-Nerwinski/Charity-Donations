@@ -7,7 +7,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.views import View, generic
-
 from apps.accounts.models import CustomUser
 from apps.donations.forms import DonationForm
 from apps.donations.models import Donation, Institution
@@ -64,7 +63,8 @@ class ContactMailView(View):
 
     @staticmethod
     def add_error(request, exception=None):
-        if exception: print('Błąd: ', exception)
+        if exception:
+            print('Błąd: ', exception)
         error_msg = _('Błąd przy wysyłaniu wiadomości. Upewnij się, że wypełnione są wszystkie pola formularza. '
                       'Spróbuj ponownie lub jeśli widzisz tę wiadomość kolejny raz skontaktuj się z nami.')
         messages.error(request, error_msg)

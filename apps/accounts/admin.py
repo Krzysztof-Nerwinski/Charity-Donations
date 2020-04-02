@@ -1,12 +1,9 @@
 from django.contrib import admin
 from django.contrib.admin import helpers
-from django.contrib.admin.actions import delete_selected
 from django.contrib.auth.admin import UserAdmin
 from django.contrib import messages
-
 from django.utils.translation import ugettext as _
 from django.db.models import Case, When, Value
-
 from .forms import CustomRegistrationForm, CustomAdminUserChangeForm
 from .models import CustomUser
 

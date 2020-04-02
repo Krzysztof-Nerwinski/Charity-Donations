@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import (UserCreationForm,
                                        AuthenticationForm,
@@ -31,6 +32,7 @@ class CustomRegistrationForm(UserCreationForm):
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
         self.fields['email'].required = True
+
         password_help_text = self.fields['password1'].help_text
         insert_class = " class='field-help-text'"
         self.fields['password1'].help_text = password_help_text[:3] + insert_class + password_help_text[3:]
@@ -74,11 +76,11 @@ class CustomUserChangeForm(ModelForm):
     class Meta:
         model = get_user_model()
         fields = ('first_name', 'last_name', 'email', 'password')
-        widgets = {'first_name': forms.TextInput(attrs={'autocomplete': 'given-name'}),
-                   'password': forms.PasswordInput()}
+        widgets = {'password': forms.PasswordInput(render_value=False)}
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, request, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.request = request
         self.fields['first_name'].required = False
         self.fields['last_name'].required = False
         self.fields['email'].required = False
@@ -94,19 +96,14 @@ class CustomUserChangeForm(ModelForm):
         cleaned_data = super().clean()
         if not cleaned_data.get('first_name') and not cleaned_data.get('last_name') and not cleaned_data.get('email'):
             raise ValidationError(_('Wypełnij co najmniej jedno pole poza hasłem'))
+        self.changed_data.remove('password')
+        if not self.changed_data:
+            raise ValidationError(_('Nie wykryto żadnych zmian!'))
 
     def save(self, *args, **kwargs):
-        current_user = self.instance
-        user = get_object_or_404(CustomUser, pk=current_user.pk)
-        new_email = self.cleaned_data.get('email')
-        new_first_name = self.cleaned_data.get('first_name')
-        new_last_name = self.cleaned_data.get('last_name')
-        if new_email:
-            user.email, user.username = new_email, new_email
-        if new_first_name:
-            user.first_name = new_first_name
-        if new_last_name:
-            user.last_name = new_last_name
+        user = get_object_or_404(CustomUser, pk=self.instance.pk)
+        for field in self.changed_data:
+            setattr(user, field, self.cleaned_data[field])
         user.save()
 
 
@@ -117,6 +114,7 @@ class CustomPasswordChangeForm(PasswordChangeForm):
         password_help_text = self.fields['new_password1'].help_text
         insert_class = " class='field-help-text'"
         self.fields['new_password1'].help_text = password_help_text[:3] + insert_class + password_help_text[3:]
+        self.fields['old_password'].widget.attrs.pop('autofocus')
 
     def clean(self):
         cleaned_data = super().clean()

@@ -9,6 +9,9 @@ def get_categories(obj):
     return ", ".join([cat.name for cat in obj.categories.all()])
 
 
+get_categories.short_description = _('Kategorie')
+
+
 def donation_archive(modeladmin, request, queryset):
     queryset.update(is_taken=Case(
         When(is_taken=True, then=Value(False)),
@@ -16,7 +19,6 @@ def donation_archive(modeladmin, request, queryset):
     ))
 
 
-get_categories.short_description = _('Kategorie')
 donation_archive.short_description = _('Zmień status darowizny')
 
 

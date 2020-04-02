@@ -21,7 +21,6 @@ class Category(models.Model):
 
 
 class Institution(models.Model):
-
     types = (
         (FOUNDATION, _('Fundacja')),
         (ORGANIZATION, _('Organizacja pozarządowa')),
@@ -33,12 +32,12 @@ class Institution(models.Model):
     type = models.IntegerField(choices=types, default=FOUNDATION)
     categories = models.ManyToManyField(Category)
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = 'Instytucja'
         verbose_name_plural = 'Instytucje'
+
+    def __str__(self):
+        return self.name
 
 
 class Donation(models.Model):
