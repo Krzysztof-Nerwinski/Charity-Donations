@@ -27,13 +27,13 @@
       </h4>
       <form action="{% url 'archive_donation' donation.id %}" method="post">
       {% csrf_token %}
-            <button type="submit" class="btn--small">
+            <button type="submit" class="btn">
           {% if not donation.is_taken %}Archiwizuj {% else %}Przywróć {% endif %}
         </button>
     </form>
 
     <a href="{% url 'profile' %}">
-      <button type="button" class="button">Powrót do profilu</button>
+      <button type="button" class="btn">Powrót do profilu</button>
     </a>
   </div>
   <br>
