@@ -28,8 +28,8 @@ change_is_staff_status.short_description = _('Zmień status zespołu dla wybrany
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
-    min_admins_number = 2
-    message_min_admins_number = _('Nie można usunąć części zaznaczonych userów. '
+    min_admins_number = 1
+    message_min_admins_number = _('Nie można zienić/usunąć części wybranych/zaznaczonych userów. '
                                   'Na stronie musi pozostać co najmniej {} superuser/(ów)').format(min_admins_number)
     # list view
     actions = [change_is_active_status, change_is_staff_status]
@@ -49,8 +49,8 @@ class CustomUserAdmin(UserAdmin):
 
     # don't allow single admin object removal when less admins than min_admins_number
     def has_delete_permission(self, request, obj=None):
-        adminset = self.model.objects.filter(is_superuser=True)
-        if obj and obj.is_superuser and (adminset.count() <= self.min_admins_number):
+        admins = self.model.objects.filter(is_superuser=True)
+        if obj and obj.is_superuser and (admins.count() <= self.min_admins_number):
             self.message_user(request, self.message_min_admins_number, messages.ERROR)
             return False
         return super(CustomUserAdmin, self).has_delete_permission(request, obj)
@@ -61,10 +61,10 @@ class CustomUserAdmin(UserAdmin):
         admins = self.model.objects.filter(is_superuser=True)
         admins_pks = admins.values_list('pk', flat=True)
         admins_in_selected = [pk_num for pk_num in admins_pks if str(pk_num) in selected]
-        admins_left = admins.count() - len(admins_in_selected)
+        admins_will_be_left = admins.count() - len(admins_in_selected)
         data = request.POST.copy()
         delete_action = data['action'] == 'delete_selected'
-        enough_admins_left = admins_left >= self.min_admins_number
+        enough_admins_left = admins_will_be_left >= self.min_admins_number
         if delete_action and admins_in_selected and not enough_admins_left:
             for pk_num in admins_in_selected:
                 selected.remove(str(pk_num))
@@ -77,3 +77,18 @@ class CustomUserAdmin(UserAdmin):
                 self.message_user(request, self.message_min_admins_number, messages.ERROR)
         else:
             return super(CustomUserAdmin, self).response_action(request, queryset)
+
+    def save_model(self, request, obj, form, change):
+        admins = self.model.objects.filter(is_superuser=True)
+        org_obj = self.model.objects.get(pk=obj.pk)
+        enough_admins_left = admins.count() > self.min_admins_number
+        changed_superuser_status = 'is_superuser' in form.changed_data
+        if org_obj.is_superuser and changed_superuser_status and not enough_admins_left:
+            messages.set_level(request, messages.WARNING)
+            message = 'Na stronie musi pozostać co najmniej {} superuser/(ów). Status superusera nie został' \
+                      ' zmieniony, pozostałe zmiany zostały zapisane'.format(self.min_admins_number)
+            self.message_user(request, message, messages.WARNING)
+            obj.is_superuser = True
+
+        super(CustomUserAdmin, self).save_model(request, obj, form, change)
+
