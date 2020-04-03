@@ -37,40 +37,6 @@ class CustomRegistrationForm(UserCreationForm):
         insert_class = " class='field-help-text'"
         self.fields['password1'].help_text = password_help_text[:3] + insert_class + password_help_text[3:]
 
-    def save(self, commit=True):
-        user = super(CustomRegistrationForm, self).save(commit=False)
-        user.username = user.email
-        if commit:
-            user.save()
-        return user
-
-
-class CustomAuthenticationForm(AuthenticationForm):
-
-    def __init__(self, *args, **kwargs):
-        super(CustomAuthenticationForm, self).__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs['autocomplete'] = 'email'
-        self.fields['username'].widget.attrs['placeholder'] = _('Email')
-        self.fields['password'].label = _('Hasło')
-        self.fields['password'].widget.attrs['placeholder'] = _('Hasło')
-
-
-class CustomAdminUserChangeForm(UserChangeForm):
-
-    def __init__(self, *args, **kwargs):
-        super(CustomAdminUserChangeForm, self).__init__(*args, **kwargs)
-        self.fields['username'].disabled = True
-
-    def save(self, commit=True):
-        super(CustomAdminUserChangeForm, self).save(commit=False)
-        self.instance.username = self.instance.email
-        if commit:
-            self.instance.save()
-            self._save_m2m()
-        else:
-            self.save_m2m = self._save_m2m
-        return self.instance
-
 
 class CustomUserChangeForm(ModelForm):
     class Meta:

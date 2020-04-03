@@ -5,7 +5,7 @@
       <li><a href="{% url 'register' %}#registration-page" class="btn btn--small btn--highlighted">Załóż konto</a></li>
     {% else %}
       <li class="logged-user">
-        Witaj {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}
+        Witaj {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.email }}{% endif %}
         <ul class="dropdown">
           <li><a href="{% url 'profile' %}#profile">Profil</a></li>
           <li><a href="{% url 'user_edit' %}">Ustawienia</a></li>

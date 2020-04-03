@@ -15,7 +15,6 @@ from django.utils.translation import gettext as _
 from apps.accounts.models import CustomUser
 from apps.accounts.tokens import account_activation_token
 from apps.accounts.forms import (CustomRegistrationForm,
-                                 CustomAuthenticationForm,
                                  CustomPasswordResetForm,
                                  CustomPasswordChangeForm,
                                  CustomUserChangeForm,
@@ -41,7 +40,6 @@ class SignUpView(View):
         if signup_form.is_valid():
             user = signup_form.save(commit=False)  # save to DB only if activation mail is sent
             user.is_active = False
-            user.username = user.email
 
             current_site = get_current_site(request)
             subject = 'Aktywuj swoje konto na charity.com'
@@ -76,8 +74,8 @@ class ActivationView(View):
             messages.error(request, _('Obecne konto jest już aktywne, w celu aktywacji innego konta wyloguj się'))
             return redirect('profile')
         try:
-            username = force_str(urlsafe_base64_decode(unameb64))
-            user = CustomUser.objects.get(username=username)
+            email = force_str(urlsafe_base64_decode(unameb64))
+            user = CustomUser.objects.get(email=email)
         except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
             user = None
         if user is not None and account_activation_token.check_token(user, token):
@@ -91,7 +89,6 @@ class ActivationView(View):
 
 class CustomLoginView(LoginView):
     template_name = 'accounts/login.html'
-    authentication_form = CustomAuthenticationForm
     redirect_authenticated_user = True
 
 
@@ -121,15 +118,15 @@ class ProfileChangeView(LoginRequiredMixin, View):
         if 'profile_change' in request.POST:
             user_form = CustomUserChangeForm(request, request.POST, instance=request.user)
             if user_form.is_valid():
-                username = request.user.username
+                email = CustomUser.objects.get(pk=request.user.pk).email
                 password = user_form.cleaned_data.get('password')
-                user = authenticate(username=username, password=password)
+                user = authenticate(username=email, password=password)
                 if user is not None:
                     user_form.save()
                     messages.success(self.request, _('Dane użytkownika zostały zmienione'))
                     return redirect('profile')
                 else:
-                    user_form.add_error(None, _('Podane błędne hasło dla użytkownika') + username)
+                    user_form.add_error(None, _('Podane błędne hasło dla użytkownika') + email)
 
             password_form = CustomPasswordChangeForm(user=request.user)
             return render(request, 'accounts/profile_change.html', {'user_form': user_form,
