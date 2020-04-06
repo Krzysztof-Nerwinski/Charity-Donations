@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -47,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'charity.urls'
@@ -104,6 +106,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'pl'
 
+LANGUAGES = (
+    ('pl', _('Polish')),
+    ('en', _('English')),
+)
+
 TIME_ZONE = 'Europe/Warsaw'
 
 USE_I18N = True
@@ -111,6 +118,11 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'apps/media_files/translations/locale'),
+)
 
 # Common static files
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'apps/media_files/static')]

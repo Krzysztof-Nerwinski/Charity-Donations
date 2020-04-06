@@ -2,36 +2,37 @@
 {% block title %} Panel użytkownika {% endblock %}
 
 {% block header %}
-  <header>
-    {% include 'includes/top_menu.html' %}
-  </header>
+    <header>
+        {% include 'includes/top_menu.html' %}
+    </header>
 {% endblock %}
 
 {% block content %}
     <section class="login-page" id="profile-change">
 
-  <div class="profile">
-    <h2>Zmień dane konta</h2>
-    <p class="profile">Wypełnij pola które chcesz zmienić oraz wprowadź obecne hasło</p><br>
+        <div class="profile">
+            <h2>Zmień dane konta</h2>
+            <p class="profile">Wypełnij pola które chcesz zmienić oraz wprowadź obecne hasło</p><br>
 
-    {% include 'includes/check_form_errors.html' with form=user_form %}
-    <form action="" method="post" class="user-change-form"> {% csrf_token %}
-      {% include 'includes/default_form_fields.html' with form=user_form %} <br>
-      <input type="submit" value="Zapisz zmiany" name="profile_change" class="btn">
-    </form>
+            {% include 'includes/check_form_errors.html' with form=user_form %}
+            <form action="" method="post" class="user-change-form"> {% csrf_token %}
+                {% include 'includes/default_form_fields.html' with form=user_form %} <br>
+                <input type="submit" value="Zapisz zmiany" name="profile_change" class="btn">
+            </form>
 
-    <h2>Zmień hasło</h2>
-    <p class="profile">{% trans 'Please enter your old password, for security’s sake, and then enter your new password twice so we can verify you typed it in correctly.' %}</p>
-    <br>
+            <h2>Zmień hasło</h2>
+            <p class="profile">{% trans 'Please enter your old password, for security’s sake, and then enter your new password twice so we can verify you typed it in correctly.' %}</p>
+            <br>
 
-    {% include 'includes/check_form_errors.html' with form=password_form %}
-    <form action="" method="post" class="user-change-form"> {% csrf_token %}
-      {% include 'includes/default_form_fields.html' with form=password_form %} <br>
-      <input type="submit" value="Zmień hasło" name="password_change" class="btn">
-    </form>
+            {% include 'includes/check_form_errors.html' with form=password_form %}
+            <form action="" method="post" class="user-change-form"> {% csrf_token %}
+                {% include 'includes/default_form_fields.html' with form=password_form %} <br>
+                <input type="submit" value="Zmień hasło" name="password_change" class="btn">
+            </form>
 
-  </div>
-  <br>
+        </div>
+        <br>
+    </section>
 
 
 {% endblock %}
