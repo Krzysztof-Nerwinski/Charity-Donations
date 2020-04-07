@@ -16,10 +16,10 @@ A registered user can donate items, selecting the Category, recipient, quantity,
 
 ## Apps inside
 * **accounts**
-  * Changes functionality of the default Django User Authentication app
+Changes functionality of the default Django User Authentication app
 
 * **donations**
-  * Handles all donation functions: adding, archiving, viewing
+Handles all donation functions: adding, archiving, viewing
 
 # Download and run
 **To run this project on Your computer follow these steps**
