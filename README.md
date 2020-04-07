@@ -15,11 +15,11 @@ Static files, templates and the idea for this application was delivered by Coder
 A registered user can donate items, selecting the Category, recipient, quantity, contact data, pickup time and place etc.
 
 ## Apps inside
-###**accounts**
-* Changes functionality of the default Django User Authentication app
+* **accounts**
+  * Changes functionality of the default Django User Authentication app
 
-###**donations**
-* Handles all donation functions: adding, archiving, viewing
+* **donations**
+  * Handles all donation functions: adding, archiving, viewing
 
 # Download and run
 **To run this project on Your computer follow these steps**
