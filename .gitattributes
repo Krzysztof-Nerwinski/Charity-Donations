@@ -1,4 +1,6 @@
 # Normalize line endings to avoid spurious failures in the core test suite on Windows.
+* linguist-vendored
+*.py linguist-vendored=false
 *html text eol=lf
 *css text eol=lf
 *js text eol=lf
