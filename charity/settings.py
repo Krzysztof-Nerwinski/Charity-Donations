@@ -19,8 +19,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '7oz9fwn@x9@9h^0uv!%c+2dtd37om8sq=&*u@9qutj#x9_w&v6'
+
+""" Database and Email config and credentials in local_settings.py """
+try:
+    from charity.local_settings import *
+except ModuleNotFoundError:
+    print("local_settings.py missing!")
+    print("Fill out correct data and try again!")
+    exit(0)
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -138,11 +145,3 @@ LOGIN_URL = 'login'
 
 # Account activation timeout in days
 PASSWORD_RESET_TIMEOUT_DAYS = 7
-
-""" Database and Email config and credentials in local_settings.py """
-try:
-    from charity.local_settings import *
-except ModuleNotFoundError:
-    print("local_settings.py missing!")
-    print("Fill out correct data and try again!")
-    exit(0)

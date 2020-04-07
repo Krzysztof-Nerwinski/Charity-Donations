@@ -1,6 +1,10 @@
+# from django.core.management.utils import get_random_secret_key
+# new_key = get_random_secret_key()
+SECRET_KEY = ''
+
+
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -21,4 +25,3 @@ EMAIL_HOST_USER = 'email address'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
