@@ -1,11 +1,11 @@
 # Content
 * [Description](#description)
-** [Use Case](#use-case)
-** [Apps inside](#apps-inside)
+  * [Use Case](#use-case)
+  * [Apps inside](#apps-inside)
 * [Download and run](#download-and-run)
 
 # Description
-** Charity - Donation django web app **
+**Charity - Donation django web app**
 This application was created solely as a way to extend my programming abilities.
 Static files, templates and the idea for this application was delivered by Coderslab.
 
@@ -15,10 +15,10 @@ Static files, templates and the idea for this application was delivered by Coder
 A registered user can donate items, selecting the Category, recipient, quantity, contact data, pickup time and place etc.
 
 ## Apps inside
-**accounts**
+###**accounts**
 * Changes functionality of the default Django User Authentication app
 
-**donations**
+###**donations**
 * Handles all donation functions: adding, archiving, viewing
 
 # Download and run
