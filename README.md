@@ -1,7 +1,7 @@
 # Content
 * [Description](#description)
-* [Use Case](#use-case)
-* [Apps inside](#apps-inside)
+** [Use Case](#use-case)
+** [Apps inside](#apps-inside)
 * [Download and run](#download-and-run)
 
 # Description
@@ -10,18 +10,18 @@ This application was created solely as a way to extend my programming abilities.
 Static files, templates and the idea for this application was delivered by Coderslab.
 
 ## Use Case
-**The idea behind the app**
-The purpose of this application is to connect people that wants to donate some items with Institutions that can help with passing them to those in need.
+**The idea behind the app:**
+**The purpose of this application is to connect people that wants to donate some items with Institutions that can help with passing them to those in need.
 A registered user can donate items, selecting the Category, recipient, quantity, contact data, pickup time and place etc.
 
-### Apps inside
+## Apps inside
 **accounts**
 * Changes functionality of the default Django User Authentication app
 
 **donations**
 * Handles all donation functions: adding, archiving, viewing
 
-#### Download and run
+# Download and run
 **To run this project on Your computer follow these steps**
 * clone this repository
 * create virtualenvironment (run `virtualenv venv`)
